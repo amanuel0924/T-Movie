@@ -1,3 +1,4 @@
+import {useState,useEffect} from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,45 +11,124 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import { LeafIcon, ChannelIcon, ProgramIcons } from '../../assets/icons';
+import { LeafIcon, ChannelIcon, ProgramIcons } from '../../componets/icons';
 import Channel from './Channel';
 import Program from './Program';
 import Overview from './Overview';
-import { Route, Routes,useNavigate } from 'react-router-dom';
+import { Route, Routes,useNavigate,useLocation } from 'react-router-dom';
 const drawerWidth = 240;
 const lists = [
     {
         text: 'Overview',
         icon: <DashboardIcon />,
-        path: ''
+        path: '/admin'
     },
     {
         text: 'Channel',
         icon: <ChannelIcon />,
-        path: 'channel'
+        path: '/admin/channel'
     },
     {
         text: 'Program',
         icon: <ProgramIcons />,
-        path: 'program'
+        path: '/admin/program'
     }
 ]
 
 export default function Dashboard() {
+    const [header, setHeader] = useState('');
+    const location = useLocation();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+      };
+    
+      const handleClose = () => {
+        setAnchorEl(null);
+      };
+
     const navigate = useNavigate();
+    useEffect(() => {
+        const path = location.pathname;
+        if(path.includes('channel')){
+            setHeader('Channel')
+        }else if(path.includes('program')){
+            setHeader('Program')
+        }else{
+            setHeader('Dashboard')
+        }        
+    }, [location.pathname]);
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar
+                elevation={1}
                 position="fixed"
-                sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+                sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`,backgroundColor:'#181A41' }}
             >
-                <Toolbar>
+                <Toolbar sx={{display:'flex', justifyContent:'space-between'}}>
                     <Typography variant="h6" noWrap component="div">
-                        Permanent drawer
+                         {header}
                     </Typography>
+                    <div>
+                    <IconButton
+          size="large"
+          aria-label="show 17 new notifications"
+          color="inherit"
+        >
+          
+            <NotificationsIcon />
+          
+        </IconButton>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+                sx={{marginTop:'30px'}}
+              >
+                <MenuItem sx={{padding:'10px 30px',display:'flex',flexDirection:'column' ,justifyContent:'center',borderBottom:'solid 1px' }}  >
+                
+<AccountCircleOutlinedIcon fontSize='large' />
+
+                <Typography  textAlign="center">User Name</Typography>
+                  <Typography variant="caption" display="block" textAlign="center">Profile</Typography>
+                </MenuItem>
+                 <MenuItem sx={{display:'flex',justifyContent:'center',color:'red', fontSize:'12px'}}  >
+                  <Typography variant="body2" >LOGOUT</Typography>
+                </MenuItem>
+              </Menu>
+            </div>
                 </Toolbar>
+               
+                
             </AppBar>
             <Drawer
                 sx={{
@@ -60,22 +140,20 @@ export default function Dashboard() {
                     },
                 }}
                 variant="permanent"
-                anchor="left"
+                anchor="left"    
             >
-                <Toolbar sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '15px' }} >
+                <Toolbar   sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '25px',boxShadow: '0 0 10px 0 rgba(0,0,0,0.4)' }}>
                     <LeafIcon />
-
-
-                    <Typography sx={{ fontWeight: 'bold' }} variant="h6" noWrap component="div">
+                    <Typography  sx={{ fontWeight: 'bold' }} variant="h6" noWrap component="div">
                         T-Movie
                     </Typography>
                 </Toolbar>
                 <Divider />
-                <List>
+                <List   >
                     {lists.map((list) => (
-                        <ListItem key={list.text} disablePadding>
-                            <ListItemButton onClick={() => navigate(list.path)}>
-                                <ListItemIcon>
+                        <ListItem  key={list.text} disablePadding sx={location.pathname === list.path ? { backgroundColor: '#181A41',color:'white',paddingLeft:'30px' ,'&:hover': { backgroundColor: '#181A41' }} : {paddingLeft:'30px','&:hover': { backgroundColor: '#D3D3D3' }}}>
+                            <ListItemButton  onClick={() => navigate(list.path)} >
+                                <ListItemIcon sx={location.pathname === list.path ? { color:'white' } : {color:'black'}}>
                                     {list.icon}
                                 </ListItemIcon>
                                 <ListItemText primary={list.text} />
@@ -85,8 +163,9 @@ export default function Dashboard() {
                 </List>
             </Drawer>
             <Box
+                
                 component="main"
-                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+                sx={{ flexGrow: 1 , bgcolor: 'background.default',border:'solid 2px', p: 3 }}
             >
                 <Toolbar />
                 <Routes>

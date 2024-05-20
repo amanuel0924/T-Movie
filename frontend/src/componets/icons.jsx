@@ -2,7 +2,7 @@ import { SvgIcon } from "@mui/material"
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 export const ChannelIcon = () => {
   return (
-    <SvgIcon>
+    <SvgIcon >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="32"
@@ -48,7 +48,7 @@ export const LeafIcon = () => {
 }
 
 export const ProgramIcons=()=>{
-  return <SvgIcon sx={{}}>
-    <AllInclusiveIcon color={'inherit'}/>
+  return <SvgIcon  >
+    <AllInclusiveIcon />
   </SvgIcon>
 }

@@ -70,12 +70,12 @@ function ResponsiveGrid() {
           sx={{
             backgroundColor: '#0E0E30',
             order: { xs: 1, sm: 4 },
-            height: {xs:'50%',sm:'100%'},
+            height: {xs:'45%',sm:'100%'},
             position: 'relative',
           }}
         >
           
-             <Card  sx={{ minHeight: '280px', height:{xs:'100%',sm:'80%'},width:'100%',border:'none', borderRadius:'0', position:'relative' }}>
+             <Card  sx={{ height:{xs:'100%',sm:'80%'},width:'100%',border:'none', borderRadius:'0', position:'relative' }}>
       <CardCover>
         <img
           src="https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320"
@@ -94,11 +94,11 @@ function ResponsiveGrid() {
       <CardContent sx={{  }}>
       
 
-    <Box color={'white'}>
-    <Stack direction={'row'} position={'relative'} >
+    <Box id='00000000000000000' color={'white'} height={'100%'}  >
+    <Stack id='111111111111111' direction={'row'} position={'relative'} >
        {
         isXS &&  <Stack >
-        <LeafIcon size={50} />
+        <LeafIcon size={30} />
           </Stack>
        }
       <Stack spacing={3} top={1} right={1} position={'absolute'} direction={'row'} alignItems={'center'}>
@@ -107,14 +107,14 @@ function ResponsiveGrid() {
         {!isXS &&   <Avatar sx={{ bgcolor: 'purple',  }}>OP</Avatar>}
       </Stack>
       </Stack>
-      <HboIcon size={50}/>
+      <Stack pt={{xs:5, sm:0}}  ><HboIcon  size={isXS?40:50}/></Stack>
       <Typography variant='subtitle2' fontWeight='bolder' >Now Playing</Typography>
       <Typography variant='h6' fontWeight='bold' >Greys Anatomy</Typography>
       <Typography variant='body2' maxWidth={'300px'} >Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta pariatur neque, totam laboriosam obcaecati natus quas tenetur corporis illo eaque sit quaerat ad cumque .</Typography>
-      <Stack spacing={3} direction='row' marginTop={'10px'} alignItems={'center'}  >
-       <Stack direction='column' spacing={1} >
-       <Stack sx={{borderRadius:'5px'}} width={'200px'} height={'5px'} bgcolor={'gray'} direction='row' spacing={2} alignItems='center'>
-        <Stack sx={{borderRadius:'5px'}} width={'50%'} height={'5px'} bgcolor={'white'} direction='row' spacing={2} alignItems='center'>
+      <Stack spacing={1} direction='row'  alignItems={'center'}  >
+       <Stack direction='column' spacing={0} pt={2} >
+       <Stack sx={{borderRadius:'5px'}} width={'200px'} height={'5px'} bgcolor={'gray'} direction='row' spacing={1} alignItems='center'>
+        <Stack sx={{borderRadius:'5px'}} width={'50%'} height={'5px'} bgcolor={'white'} direction='row' spacing={1} alignItems='center'>
           </Stack>
           </Stack>
           <Stack width={'200px'}  direction='row' justifyContent='space-between' alignItems='center'>
@@ -123,7 +123,7 @@ function ResponsiveGrid() {
             </Stack>
             </Stack>
 
-          <Stack   direction='column' height={'65px'}  >
+          <Stack   direction='column' alignItems={'center'}  >
           <PlayCircleIcon fontSize='large'/>
           </Stack>
           
@@ -186,7 +186,7 @@ function ResponsiveGrid() {
           sx={{
             backgroundColor: '#0E0E30',
             order: { xs: 4, sm: 1 },
-            height: {xs:'8%',sm:'100%'}
+            height: {xs:'7%',sm:'100%'}
           }}
         >
          <SideNav>
@@ -201,9 +201,7 @@ function ResponsiveGrid() {
           sx={{
             backgroundColor: '#0E0E30',
             order: { xs: 2, sm: 2 },
-            height: {xs:'17%',sm:'100%'},
-            marginTop: { xs: 2, sm: 0 },
-            
+            height: {xs:'18%',sm:'100%'},
           }}
         >
            <Stack  direction={{ xs: 'row', sm: 'column' }} spacing={{xs:4,sm:2.5}} sx={{ height:'100%' , overflow: 'auto' ,color: 'primary.contrastText',justifyContent:{xs:'center' ,sm:'center'} ,alignItems: 'center', '& > *': {

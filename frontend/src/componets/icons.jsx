@@ -1,4 +1,4 @@
-import { Avatar, SvgIcon } from "@mui/material"
+import { Avatar, Box, SvgIcon } from "@mui/material"
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import PropTypes from 'prop-types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -73,11 +73,14 @@ export const HboIcon = ({size}) => {
 export const SearchIcon = () => { 
   return <Avatar sx={{backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.5)'}}> <SearchIcon/></Avatar>}
 
-export const ChevronIcon = () => {
+export const ChevronIcon = ({size,p,m}) => {
   return (
-    <Avatar sx={{p:3}}>
-    <ChevronLeftIcon sx={{fontSize:50}} />
+   <Box p={p} m={m}>
+     <Avatar>
+    <ChevronLeftIcon  sx={{fontSize:size}} />
   </Avatar>
+    </Box>
+   
   )
 }
 
@@ -87,6 +90,13 @@ LeafIcon.propTypes = {
   size: PropTypes.number,
 };
 
+
 HboIcon.propTypes = {
   size: PropTypes.number,
+};
+
+ChevronIcon.propTypes = {
+  size: PropTypes.number,
+  p: PropTypes.number,
+  m: PropTypes.number,
 };

@@ -1,8 +1,10 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import { Grid, Box, Stack} from '@mui/material';
+import { Grid, Box, Stack, Typography} from '@mui/material';
 
 import { useMediaQuery } from '@mui/material';
 import SideNav from '../componets/SideNav';
+import TimeAndWeather from '../componets/TimeAndWeather';
+import {  ChevronIcon } from '../componets/icons';
 
 
 
@@ -19,7 +21,7 @@ function ResponsiveGrid() {
         <Grid
           item
           xs={12}
-          sm={10}
+          sm={11}
           sx={{
             backgroundColor: 'yellow',
             order: { xs: 1, sm: 4 },
@@ -29,21 +31,35 @@ function ResponsiveGrid() {
         >
           <Stack height={'100%'}>
             <Stack
-            bgcolor={'#181A41'}
-            height={{xs:'10%',sm:'20%'}}
-            ></Stack>
+            direction={'row'}
+            py={{xs:2}}
+            px={5}
+            justifyContent={'space-between'}
+            alignItems={'end'}
+            bgcolor={'#0E0E30'}
+            height={{xs:'10%',sm:'22%'}}
+            >
+              {isXS && <ChevronIcon  size={30} />}
+              <Typography variant={'h5'} sx={{color:'white',textAlign:'center',paddingTop:2}}>Movies</Typography>
+              <Stack>
+              {!isXS &&  <TimeAndWeather>
+                <Typography variant={'subtitle2'} sx={{color:'white',textAlign:'center'}}>Thuesday,Apr 4</Typography>
+               </TimeAndWeather>}
+            
+              </Stack>
+            </Stack>
             <Stack
             bgcolor={'gray'}
-            height={{xs:'90%',sm:'80%'}}
+            height={{xs:'90%',sm:'78%'}}
             ></Stack>
           </Stack>
         </Grid>
        {!isXS &&  <Grid
           item
-          xs={12}
-          sm={2}
+          
+          sm={1}
           sx={{
-            backgroundColor: 'blue',
+            backgroundColor: '#0E0E30',
             order: { xs: 4, sm: 1 },
             height: {xs:'50%',sm:'100%'}
           }}

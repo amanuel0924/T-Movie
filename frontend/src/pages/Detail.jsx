@@ -94,7 +94,7 @@ function ResponsiveGrid() {
             height={{xs:'10%',sm:'20%'}}
             >
              <Stack spacing={2} direction={'row'} alignItems={'center'} >
-             {isXS && <ChevronIcon  size={30}  />}
+             {isXS && <ChevronIcon  size={35}  />}
               <Typography  variant={isXS?'h6':'h5'} sx={{color:'white'}}>Movies</Typography>
              </Stack>
               <Stack color={'white'} spacing={3} direction={'row'} alignItems={'center'}>
@@ -103,7 +103,7 @@ function ResponsiveGrid() {
                </TimeAndWeather>}
               <Stack direction={'row'} spacing={2}>
             <MySearchIcon/>
-              <Avatar sx={{ bgcolor: 'purple',  }}>OP</Avatar>
+              <Avatar sx={{ bgcolor: 'purple', }}>OP</Avatar>
               </Stack>
               </Stack>
             </Stack>

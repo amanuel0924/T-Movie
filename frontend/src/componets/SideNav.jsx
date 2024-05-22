@@ -7,7 +7,6 @@ import { useMediaQuery } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 
 
-
 const SideNav = (prop) => {
     const location = useLocation();
     const isXS = useMediaQuery('(max-width:600px)')
@@ -17,19 +16,19 @@ const SideNav = (prop) => {
        !isXS &&  <Stack  sx={{height:'40%' ,justifyContent:'center',alignItems:'end' }}>
       
        {
-              location.pathname.includes('detail') ? <ChevronIcon size={40} p={5}/>: <LeafIcon size={60} />
+              location.pathname.includes('detail') ? <ChevronIcon size={35} p={7}/>: <LeafIcon size={60} />
        }
      </Stack>
     }
      <Stack pr={1}  direction={{ xs: 'row', sm: 'column' }} spacing={6}  sx={{ height:{xs:'100%' ,sm:'60%'}, color: 'primary.contrastText',justifyContent:{xs:'center' ,sm:'start'} ,alignItems: 'end'}}>
-     <Avatar>
- <LiveTvIcon />
+     <Avatar sx={{background:"linear-gradient(132deg, rgba(47,47,98,1) 31%, rgba(67,67,163,1) 48%, rgba(27,45,95,1) 78%)",p:3 }}  >
+ <LiveTvIcon fontSize='small'  />
      </Avatar>
-<Avatar>
- <StarIcon />
+     <Avatar sx={{bgcolor: '#161638',p:3 }}  >
+ <StarIcon fontSize='small'  />
 </Avatar>
-<Avatar>
- <AccessTimeFilledIcon />
+<Avatar sx={{bgcolor: '#161638',p:3 }}  >
+ <AccessTimeFilledIcon fontSize='small'  />
 </Avatar>
 {prop.children}
      </Stack>

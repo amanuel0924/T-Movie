@@ -1,7 +1,6 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { Grid, Box, Stack, Avatar, Typography } from '@mui/material';
-import { LeafIcon,HboIcon} from '../componets/icons';
-import LiveTvIcon from '@mui/icons-material/LiveTv';
+import { LeafIcon,HboIcon,} from '../componets/icons';
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import CardContent from '@mui/joy/CardContent';
@@ -11,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import TimeAndWeather from '../componets/TimeAndWeather';
 import SideNav from '../componets/SideNav';
+import ChannelsNav from '../componets/Channels';
 
 
 const data = [
@@ -202,70 +202,7 @@ function ResponsiveGrid() {
             height: {xs:'18%',sm:'100%'},
           }}
         >
-           <Stack  direction={{ xs: 'row', sm: 'column' }} spacing={{xs:4,sm:2.5}} sx={{ height:'100%' , overflow: 'auto' ,color: 'primary.contrastText',justifyContent:{xs:'center' ,sm:'center'} ,alignItems: 'center', '& > *': {
-          scrollSnapAlign: 'center',
-        },
-        '::-webkit-scrollbar': { display: 'none' },}}>
-           <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }} alignItems={'center'} justifyContent={'start'} >
-           <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }} alignItems={'center'} justifyContent={'start'} >
-            <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }}alignItems={'center'} justifyContent={'start'} >
-            <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }}alignItems={'center'} justifyContent={'start'} >
-            <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-           
-           <Stack spacing={0}   direction={{ xs: 'column', sm: 'row', }} alignItems={'center'} justifyContent={'start'} >
-           <Box sx={{border:'solid black 2px ',borderRadius:'100%',p:1}}>
-           <Avatar sx={{p:4,}}>
-        <HboIcon />
-            </Avatar>
-            </Box>
-            <Typography variant='body1' fontWeight='bolder' >HBO</Typography>
-            </Stack>
-          
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }} alignItems={'center'} justifyContent={'start'} >
-           <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }} alignItems={'center'} justifyContent={'start'} >
-            <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }} alignItems={'center'} justifyContent={'start'} >
-            <Avatar >
-        <HboIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-            <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }}alignItems={'center'} justifyContent={'start'} >
-            <Avatar >
-        <LiveTvIcon />
-            </Avatar>
-            <Typography>Live</Typography>
-            </Stack>
-            </Stack>
+          <ChannelsNav/>
         </Grid>
         {isXS &&  <Grid
           component={Grid}

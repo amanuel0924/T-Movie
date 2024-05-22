@@ -44,7 +44,6 @@ const movies = [
     isNew: false,
     isActive: false
   },
- 
 ];
 
 
@@ -58,12 +57,10 @@ function ResponsiveGrid() {
           item
           xs={12}
           sm={10}
-          
           sx={{
             order: { xs: 1, sm: 4 },
             height: '100%',
             position: 'relative',
-            
           }}
         >
          <Card  sx={{ height:{xs:'100%',sm:'100%'},width:'100%',border:'none', borderRadius:'0' }}>
@@ -77,7 +74,6 @@ function ResponsiveGrid() {
       </CardCover>
       <CardCover
         sx={{
-         
           background:
             'radial-gradient(circle, rgba(182,174,238,0.2) 0%, rgba(14,14,48,0.98) 0%)',
         }}
@@ -90,7 +86,6 @@ function ResponsiveGrid() {
             px={{xs:2,sm:5}}
             justifyContent={'space-between'}
             alignItems={'end'}
-           
             height={{xs:'10%',sm:'20%'}}
             >
              <Stack spacing={2} direction={'row'} alignItems={'center'} >

@@ -184,7 +184,8 @@ function ResponsiveGrid() {
           sx={{
             backgroundColor: '#0E0E30',
             order: { xs: 4, sm: 1 },
-            height: {xs:'7%',sm:'100%'}
+            height: {xs:'7%',sm:'100%'},
+            position:'sticky',
           }}
         >
          <SideNav>
@@ -218,9 +219,7 @@ function ResponsiveGrid() {
             <Box 
     
     sx={{
-     zIndex: 1,
-     border:'red 1px solid',
-      
+    
       bottom: -90,
       right: 0,
       width: '100%',

@@ -2,6 +2,7 @@ import { Avatar, Box, SvgIcon } from "@mui/material"
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import PropTypes from 'prop-types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import SearchIcon from '@mui/icons-material/Search';
 export const ChannelIcon = () => {
   return (
     <SvgIcon >
@@ -70,13 +71,13 @@ export const HboIcon = ({size}) => {
   )
 }
 
-export const SearchIcon = () => { 
-  return <Avatar sx={{backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.5)'}}> <SearchIcon/></Avatar>}
+export const MySearchIcon = () => { 
+  return <Avatar sx={{backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 80, 0.5)' ,}}> <SearchIcon fontSize='medium'/></Avatar>}
 
 export const ChevronIcon = ({size,p,m}) => {
   return (
-   <Box p={p} m={m}>
-     <Avatar>
+   <Box pb={p} m={m}>
+     <Avatar sx={{p:{xs:'10px',sm:'25px'}}} >
     <ChevronLeftIcon  sx={{fontSize:size}} />
   </Avatar>
     </Box>

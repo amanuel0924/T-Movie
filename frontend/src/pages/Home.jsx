@@ -75,7 +75,7 @@ function ResponsiveGrid() {
           }}
         >
           
-             <Card  sx={{ height:{xs:'100%',sm:'80%'},width:'100%',border:'none', borderRadius:'0', position:'relative' }}>
+     <Card  sx={{ height:{xs:'100%',sm:'80%'},width:'100%',border:'none', borderRadius:'0', position:'relative' }}>
       <CardCover>
         <img
           src="https://images.unsplash.com/photo-1542773998-9325f0a098d7?auto=format&fit=crop&w=320"
@@ -126,9 +126,7 @@ function ResponsiveGrid() {
           <Stack   direction='column' alignItems={'center'}  >
           <PlayCircleIcon fontSize='large'/>
           </Stack>
-          
       </Stack>
-     
     </Box>
     <Box 
     

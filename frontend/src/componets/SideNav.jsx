@@ -17,7 +17,7 @@ const SideNav = (prop) => {
        !isXS &&  <Stack  sx={{height:'40%' ,justifyContent:'center',alignItems:'end' }}>
       
        {
-              location.pathname.includes('detail') ? <ChevronIcon/>: <LeafIcon size={60} />
+              location.pathname.includes('detail') ? <ChevronIcon size={40} p={5}/>: <LeafIcon size={60} />
        }
      </Stack>
     }

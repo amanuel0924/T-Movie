@@ -13,3 +13,7 @@ export const loginSchema = zod.object({
   email: zod.string().email(),
   password: zod.string().min(6),
 })
+
+export const channelSchema = zod.object({
+  name: zod.string().min(3),
+})

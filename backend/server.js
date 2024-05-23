@@ -3,7 +3,9 @@ import http from "http"
 import cors from "cors"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
+
 import authRoutes from "./routes/authRoutes.js"
+import channelRoutes from "./routes/channelRoutes.js"
 
 dotenv.config()
 import { Server } from "socket.io"
@@ -26,10 +28,8 @@ app.use(
 app.use(express.json())
 app.use(cookieParser())
 
-app.use("/auth", authRoutes)
-app.get("/", (req, res) => {
-  res.send("Server is running")
-})
+app.use("/api/auth", authRoutes)
+app.use("/api/channel", channelRoutes)
 
 io.on("connection", (socket) => {
   console.log("a user connected")

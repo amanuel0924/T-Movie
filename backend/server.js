@@ -3,9 +3,11 @@ import http from "http"
 import cors from "cors"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
+import morgan from "morgan"
 
 import authRoutes from "./routes/authRoutes.js"
 import channelRoutes from "./routes/channelRoutes.js"
+import movieRoutes from "./routes/movieRoute.js"
 
 dotenv.config()
 import { Server } from "socket.io"
@@ -27,13 +29,17 @@ app.use(
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(morgan("dev"))
 
 app.use("/api/auth", authRoutes)
 app.use("/api/channel", channelRoutes)
+app.use("/api/movie", movieRoutes)
 
-io.on("connection", (socket) => {
+io.on("connect", (socket) => {
   console.log("a user connected")
-  console.log(socket.request.session)
+  io.on("disconnect", () => {
+    console.log("Client disconnected")
+  })
 })
 
 server.listen(4000, () => {

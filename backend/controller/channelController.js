@@ -13,6 +13,8 @@ export const getChannels = async (req, res) => {
 
 export const createChannel = async (req, res) => {
   try {
+    console.log("createChannel")
+    console.log(req.body)
     const { name } = req.body
     const channel = await prisma.channel.create({
       data: {
@@ -21,6 +23,7 @@ export const createChannel = async (req, res) => {
     })
     res.json(channel)
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: "Something went wrong" })
   }
 }

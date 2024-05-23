@@ -24,6 +24,7 @@ import Program from './Program';
 import Overview from './Overview';
 import { Route, Routes,useNavigate,useLocation } from 'react-router-dom';
 const drawerWidth = 240;
+
 const lists = [
     {
         text: 'Overview',
@@ -167,6 +168,7 @@ export default function Dashboard() {
             >
                 <Toolbar />
                 <Routes>
+                    
                     <Route path='' exact element={<Overview />} />
                     <Route path="channel" element={<Channel />} />
                     <Route path="program" element={<Program />} />

@@ -23,7 +23,6 @@ const PagesHeader = (props) => {
             '&.Mui-focused fieldset': {
               borderColor: 'transparent',
             },
-            
           },width: '100%'}} id="outlined-basic" placeholder="Search" variant="outlined" size="small" />
       </Box>
     </Grid>
@@ -40,7 +39,8 @@ const PagesHeader = (props) => {
   )
 }
 PagesHeader.propTypes = {
-    openModal: PropTypes.func.isRequired,
+    openModal: PropTypes.func,
   };
+
 
 export default PagesHeader

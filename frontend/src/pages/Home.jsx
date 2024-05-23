@@ -59,6 +59,7 @@ const data = [
 
 function ResponsiveGrid() {
   const isXS = useMediaQuery('(max-width:600px)')
+  
   return (
     <Box sx={{ height: '100vh',backgroundColor: '#0E0E30' }}>
       <CssBaseline />

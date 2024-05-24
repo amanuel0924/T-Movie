@@ -1,8 +1,7 @@
 import { useState,useEffect } from "react";
 import { Box, Stack, Typography,TextField,Button } from "@mui/material"
 import { LeafIcon } from '../../componets/icons';
-import CssBaseline from '@mui/material/CssBaseline';
-import axios from 'axios';  
+import CssBaseline from '@mui/material/CssBaseline'; 
 import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
@@ -25,7 +24,7 @@ const { user} = useSelector((state) => state.auth)
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('https://t-movie.onrender.com/api/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

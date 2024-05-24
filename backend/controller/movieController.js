@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client"
-import { io } from "./../server.js"
 
 const prisma = new PrismaClient()
 

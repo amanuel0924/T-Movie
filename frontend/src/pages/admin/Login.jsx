@@ -25,11 +25,17 @@ const { user} = useSelector((state) => state.auth)
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-          axios.defaults.withCredentials = true;
-        const response = await axios.post('/api/auth/login', {
-            email,
-            password
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include', // This is similar to axios.defaults.withCredentials = true
+        body: JSON.stringify({
+            email: email,
+            password: password
         })
+    });
 
        console.log(response)
         dispatch(setCredentials({ ...response}))

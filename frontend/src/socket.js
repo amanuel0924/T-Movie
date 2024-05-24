@@ -1,6 +1,6 @@
 import { io } from "socket.io-client"
 
-const socket = io("/api", {
+const socket = io("https://t-movie.onrender.com/api", {
   withCredentials: true,
 })
 

@@ -18,12 +18,14 @@ const io = new Server(server, {
   cors: {
     origin: "https://t-movie-ruddy.vercel.app",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   },
 })
 app.use(
   cors({
     origin: "https://t-movie-ruddy.vercel.app",
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
 )
 

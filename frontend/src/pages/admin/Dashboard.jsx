@@ -22,7 +22,12 @@ import { LeafIcon, ChannelIcon, ProgramIcons } from '../../componets/icons';
 import Channel from './Channel';
 import Program from './Program';
 import Overview from './Overview';
-import { Route, Routes,useNavigate,useLocation } from 'react-router-dom';
+import { Route, Routes,useNavigate,useLocation} from 'react-router-dom';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { logout } from './../../redux/authSlice';
+import { toast } from 'react-toastify';
+import { Button } from '@mui/material';
 const drawerWidth = 240;
 
 const lists = [
@@ -44,9 +49,30 @@ const lists = [
 ]
 
 export default function Dashboard() {
+  
     const [header, setHeader] = useState('');
     const location = useLocation();
     const [anchorEl, setAnchorEl] = useState(null);
+
+    
+  
+    const dispatch = useDispatch();
+    const handlelogout = async () => {
+    
+      try {
+            axios.defaults.withCredentials = true;
+           await axios.post('http://localhost:4000/api/auth/logout')
+          dispatch(logout())
+          navigate('/');
+  }
+  catch (error) {
+    console.error(error);
+      toast.error(error?.data?.message || error.message)
+  }
+  }
+  
+
+
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
       };
@@ -117,12 +143,11 @@ export default function Dashboard() {
                 <MenuItem sx={{padding:'10px 30px',display:'flex',flexDirection:'column' ,justifyContent:'center',borderBottom:'solid 1px' }}  >
                 
 <AccountCircleOutlinedIcon fontSize='large' />
-
-                <Typography  textAlign="center">User Name</Typography>
-                  <Typography variant="caption" display="block" textAlign="center">Profile</Typography>
+                <Typography  textAlign="center">Admin</Typography>
+                  <Typography variant="caption" display="block" textAlign="center">admin@email.com</Typography>
                 </MenuItem>
                  <MenuItem sx={{display:'flex',justifyContent:'center',color:'red', fontSize:'12px'}}  >
-                  <Typography variant="body2" >LOGOUT</Typography>
+                  <Button  onClick={handlelogout}  variant='text'  color='error' >LOGOUT</Button>
                 </MenuItem>
               </Menu>
             </div>
@@ -171,7 +196,11 @@ export default function Dashboard() {
                     
                     <Route path='' exact element={<Overview />} />
                     <Route path="channel" element={<Channel />} />
+                    <Route path="channel/search/:keyword" element={<Channel />} />
                     <Route path="program" element={<Program />} />
+                    <Route path="program/:pageNumber" element={<Program />} />
+                    <Route path="program/search/:keyword" element={<Program />} />
+
                 </Routes>
 
             </Box>

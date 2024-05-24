@@ -1,7 +1,17 @@
-import  { useState} from "react"
-import {  Box, Paper,Modal,Typography, TextField, Button, Stack  } from "@mui/material"
+import  { useState,useEffect} from "react"
+import {  Box, Paper,Modal,Typography, TextField, Button, Stack } from "@mui/material"
 import PagesHeader from "../../componets/PagesHeader"
-
+import {useCRUD} from './../../services/channelServiec'
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import socket from "../../socket";
+import { toast } from "react-toastify";
+import Loader from '../../componets/Loader';
+import ProgramTable from "../../componets/programTable";
+import Paginate from "../../componets/Pagination";
+import { useParams } from "react-router-dom";
 
 const style = {
   position: 'absolute',
@@ -15,15 +25,112 @@ const style = {
   p: 2,
 
 };
-
+const API_URL = "http://localhost:4000/api"
 const Program = () => {
+  const { pageNumber, keyword } = useParams()
   const [open, setOpen] = useState(false);
+  const [id, setId] = useState('');
+  const [deleteId, setDeleteId] = useState('');
+  const [title, setTitle] = useState('');
+  const [channel, setChannel] = useState('');
+  const [type, setType] = useState('');
+  const [category, setCategory] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
+  const [duration, setDuration] = useState('');
+  const [description, setDescription] = useState('');
+
+
+
+  const handleClose = () => {
+    setOpen(false)
+    setId('')
+    setTitle('')
+    setChannel('')
+    setType('')
+    setCategory("")
+    setVideoUrl('')
+    setDuration('')
+    setDeleteId('')
+    setDescription('')
+  };
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  
+  const { data,fetchData,updateData,deleteData,createData,loading } = useCRUD(`${API_URL}/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
+  const { data: types,fetchData:fechtype} = useCRUD(`${API_URL}/typeandcategory/types`);
+  const { data: categorys,fetchData:fechCat} = useCRUD(`${API_URL}/typeandcategory/categories`);
+  const { data: channels,fetchData:fechChannel} = useCRUD(`${API_URL}/channel`);
+
+
+
+  const handleCreate = async () => {
+    if (!title || !channel || !type || !category || !videoUrl || !duration||!description) {
+      toast.error("please fill all input")
+    } else {
+      try {
+        await createData({  title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'movieCreated')
+        toast.success("movie created succesfully")
+        handleClose();
+      } catch (error) {
+        toast.error(error?.data?.message || error.message)
+      }
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!title || !channel || !type || !category || !videoUrl || !duration||!description) {
+      toast.error("please fill all input")
+    } else {
+      try {
+        await updateData(id, { title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'movieUpdated')
+        handleClose();
+        toast.success("movie updated succesfully")
+      } catch (error) {
+        toast.error(error?.data?.message || error.message)
+      }
+    }
+  };
+
+
+
+  const handleDelete = async () => { 
+    try {
+      await deleteData(deleteId,'movieDeleted')
+      handleClose();
+      toast.success("movie deleted succesfully")
+    } catch (error) {
+      toast.error(error?.data?.message || error.message)
+    }
+  }
+
+ 
+
+  useEffect(() => {
+    fetchData();
+    fechtype();
+    fechCat();
+    fechChannel();
+    socket.on('channelCreated', fechChannel());
+    socket.on('channelDeleted', fechChannel());
+    socket.on('channelUpdated', fechChannel());
+    socket.on('movieCreated', fetchData());
+    socket.on('movieDeleted', fetchData());
+    socket.on('movieUpdated', fetchData());
+
+    return () => {
+      socket.off('channelCreated', fechChannel());
+      socket.off('channelDeleted', fechChannel());
+      socket.off('channelUpdated', fechChannel());
+      socket.off('movieCreated', fetchData());
+      socket.off('movieDeleted', fetchData());
+      socket.off('movieUpdated', fetchData());
+    }
+  }, [fetchData,fechtype,fechCat,fechChannel]);
   return (
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px',}}>
       <PagesHeader openModal={handleOpen} />
+      <ProgramTable  data={data.movies} openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
+    <Paginate page={data.page} total={data.pages}  />  
     </Box>
     <Modal
         open={open}
@@ -32,24 +139,85 @@ const Program = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" sx={{textAlign:'center', fontWeight:'600'}} variant="h4" component="h4">
-            Add Program
+        <Typography id="modal-modal-title" sx={{textAlign:'center', fontWeight:'600'}} variant="h4" component="h4">
+            {deleteId?'are you sure Delete':id?'Edit':'Add'} Program
           </Typography>
-        <Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
+        {!deleteId&&<Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
        <Stack spacing={2} direction='column' >
-       <TextField    sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'}  />
-       <TextField    sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'}  />
-       <TextField    sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'}  />
+       <TextField    sx={{marginTop:2, }}  label="Video URL" variant={'filled'} size={'small'}  value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} />
+        <TextField    sx={{marginTop:2, }}  label="Description" variant={'filled'} size={'small'}  value={description} onChange={(e) => setDescription(e.target.value)} />
+       <TextField    sx={{marginTop:2, }} type="number"  label="Duration" variant={'filled'} size={'small'}  value={duration} onChange={(e) => setDuration(e.target.value)} />
+       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <InputLabel id="demo-select-small-label-chnnel">Channel</InputLabel>
+      <Select
+        labelId="demo-select-small-label"
+        id="demo-select-small-chneel"
+        value={channel}
+        label=" Channel"
+        onChange={ (e) => setChannel(e.target.value)}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+       {
+          channels?.map((channel) => (
+            <MenuItem key={channel.id} value={channel.id}>{channel.name}</MenuItem>
+          ))
+       }
+        
+      </Select>
+    </FormControl>
        </Stack>
        <Stack spacing={2} direction='column' >
-       <TextField    sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'}  />
-       <TextField    sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'}  />
-       <TextField    sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'}  />
+       <TextField    sx={{marginTop:2, }}  label="Title" variant={'filled'} size={'small'}  value={title} onChange={(e) => setTitle(e.target.value)} />
+       <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <InputLabel id="demo-select-small-label-chnnel-Category">Category</InputLabel>
+      <Select
+        labelId="demo-select-small-label-Category"
+        id="demo-select-small-chneel-Category"
+        value={category}
+        label=" Category"
+        onChange={ (e) => setCategory(e.target.value)}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+       {
+          categorys?.map((cat) => (
+            <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+          ))
+       }
+        
+      </Select>
+    </FormControl>
+    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <InputLabel id="demo-select-small-label-chnnel-type">Type</InputLabel>
+      <Select
+        labelId="demo-select-small-label-type"
+        id="demo-select-small-chneel-type"
+        value={type}
+        label=" Type"
+        onChange={ (e) => setType(e.target.value)}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+       {
+          types?.map((type) => (
+            <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
+          ))
+       }
+        
+      </Select>
+    </FormControl>
        </Stack>
-        </Box>
+        </Box>}
         <Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
-        <Button color={'inherit'} onClick={handleClose}  variant={'outlined'}>Cancel</Button>
-       <Button color={'inherit'}  sx={{color:'white',bgcolor:'#181A41' , '&:hover':{bgcolor:'#181A41',opacity:'0.9'}}} variant={'contained'}>Add</Button>
+        <Button onClick={handleClose}  variant={'outlined'}>Cancel</Button>
+       {!id&&!deleteId&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'} onClick={handleCreate}>{loading? <Loader/>:'Create'
+       }</Button>}
+       {id&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}  onClick={handleUpdate}>{loading? <Loader/>:'Update'}</Button>}
+       {deleteId&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}  onClick={handleDelete}>{loading? <Loader/>:'Delete'}</Button>}
         </Box>
         </Box>
       </Modal>

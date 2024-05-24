@@ -113,7 +113,6 @@ function ResponsiveGrid() {
                 <Typography variant={'subtitle2'} sx={{color:'white'}}>Trending</Typography>
               </Stack>
               </Stack>
-           
               <Box 
                 sx={{
                    width: '100%',

@@ -1,17 +1,38 @@
 import PropTypes from 'prop-types';
-import { Box , Grid,TextField,Button } from "@mui/material"
+import { Box , Grid,TextField,Button, IconButton } from "@mui/material"
 import IosShareIcon from '@mui/icons-material/IosShare';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { useState } from 'react';
+import { useNavigate, useParams,useLocation } from 'react-router-dom';
 
 const PagesHeader = (props) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { keyword: urlKeyword } = useParams()
+  const [keyword, setKeyword] = useState(urlKeyword || "");
+
+
+  const searchHandler = () => {
+
+    if(location.pathname.includes('program')&&keyword){
+      navigate(`/admin/program/search/${keyword}`)
+    }else if(location.pathname.includes('channel')&&keyword){
+      navigate(`/admin/channel/search/${keyword}`)
+    }else{
+    navigate(`/admin/${location.pathname.split('/')[2]}` )
+    }
+  }
+
+
 
   return (
     <Grid container  spacing={2} sx={{padding:2}}>
     <Grid item xs={8}>
       <Box sx={{bgcolor:'#e0e0e0',display:'flex',alignItems:'center',padding:'0 10px',}} >
-                <SearchIcon fontSize={'medium'} sx={{ color: 'text.secondary' }}  /> 
+              <IconButton onClick={searchHandler} sx={{color:'#181A41'}} aria-label="search">
+                <SearchIcon />
+              </IconButton>
                 <TextField  sx={{
           '& .MuiOutlinedInput-root': {
             '& fieldset': {
@@ -23,7 +44,7 @@ const PagesHeader = (props) => {
             '&.Mui-focused fieldset': {
               borderColor: 'transparent',
             },
-          },width: '100%'}} id="outlined-basic" placeholder="Search" variant="outlined" size="small" />
+          },width: '100%'}} id="outlined-basic" placeholder="Search" variant="outlined" size="small" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
       </Box>
     </Grid>
     <Grid item xs={4}>
@@ -33,7 +54,9 @@ const PagesHeader = (props) => {
   <Button  sx={{color:'#181A41'}} variant="text" startIcon={<FilterListIcon />}>
     Add Filter
   </Button>
-    <Button  onClick={()=>props.openModal()} sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}>Text</Button>
+    <Button  onClick={()=>props.openModal()} sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}>{
+      location.pathname.includes('channel')?'Add Channel':location.pathname.includes('program')?'Add Program':'Add Filter'
+    }</Button>
     </Grid>
   </Grid>
   )

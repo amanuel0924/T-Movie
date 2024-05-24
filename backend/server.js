@@ -4,10 +4,10 @@ import cors from "cors"
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 import morgan from "morgan"
-
 import authRoutes from "./routes/authRoutes.js"
 import channelRoutes from "./routes/channelRoutes.js"
 import movieRoutes from "./routes/movieRoute.js"
+import typeCategory from "./routes/TypeAndCategory.js"
 
 dotenv.config()
 import { Server } from "socket.io"
@@ -34,11 +34,21 @@ app.use(morgan("dev"))
 app.use("/api/auth", authRoutes)
 app.use("/api/channel", channelRoutes)
 app.use("/api/movie", movieRoutes)
+app.use("/api/typeandcategory", typeCategory)
 
 io.on("connect", (socket) => {
   console.log("a user connected")
-  io.on("disconnect", () => {
-    console.log("Client disconnected")
+  socket.on("channelCreated", (data) => {
+    io.emit("newChannel")
+  })
+  socket.on("channelDeleted", (data) => {
+    io.emit("chDeleted")
+  })
+  socket.on("channelUpdated", (data) => {
+    io.emit("chUpdated")
+  })
+  socket.on("channelToggle", (data) => {
+    io.emit("chToggle", data)
   })
 })
 

@@ -2,6 +2,7 @@ import  { useState,useEffect} from "react"
 import {  Box, Paper,Modal,Typography, TextField, Button  } from "@mui/material"
 import PagesHeader from "../../componets/PagesHeader"
 
+
 import Loader from '../../componets/Loader';
 
 import ChannelTable from "../../componets/ChannelTable";
@@ -10,6 +11,7 @@ import ChannelTable from "../../componets/ChannelTable";
 import socket from '../../socket';
 import { toast } from "react-toastify";
 import {useCRUD} from './../../services/channelServiec'
+import { useParams } from "react-router-dom";
 
 const style = {
   position: 'absolute',
@@ -27,6 +29,7 @@ const style = {
 
 const Channel = () => {
   const [name, setname] = useState('');
+  const {keyword} = useParams()
   const [id, setId] = useState('');
   const [deleteId, setDeleteId] = useState('');
   const [open, setOpen] = useState(false);
@@ -38,9 +41,8 @@ const Channel = () => {
     setDeleteId('')
   }
 
-const API_URL = "http://localhost:4000/api/channel"
+const API_URL = `http://localhost:4000/api/channel${keyword?`?keyword=${keyword}`:''}`
 const { data: channel,fetchData,createData,loading,updateData,deleteData } = useCRUD(API_URL);
-
   const handleCreate = async () => {
     if (!name) {
       toast.error("please fill all input")
@@ -72,6 +74,13 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
     }
   };
 
+
+
+  
+
+
+
+
   const handleDelete = async () => { 
     try {
       await deleteData(deleteId,'channelDeleted')
@@ -86,24 +95,22 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
 
 
 
+
   useEffect(() => {
     fetchData();
-    socket.on('channelCreated', fetchData);
-    socket.on('channelDeleted', fetchData);
-    socket.on('channelUpdated', fetchData);
+    socket.on('newChannel', fetchData)
+     socket.on('chDeleted', fetchData);
+     socket.on('chUpdated', fetchData);
+     socket.on('chToggle', fetchData);
 
-    return () => {
-      socket.off('channelCreated', fetchData);
-      socket.off('channelDeleted', fetchData);
-      socket.off('channelUpdated', fetchData);
-    }
+   
   }, [fetchData]);
   return (
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px'}}>
       <PagesHeader openModal={handleOpen}  />
    
-{loading?<Loader/>:<ChannelTable data={channel} openModal={handleOpen} setName={setname} setId={setId} setDeleteId={setDeleteId} />}
+<ChannelTable data={channel} openModal={handleOpen} setName={setname} setId={setId} setDeleteId={setDeleteId}   />
     </Box>
     <Modal
         open={open}

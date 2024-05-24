@@ -19,23 +19,19 @@ const dispatch = useDispatch();
 const { user} = useSelector((state) => state.auth)
 
 
-useEffect(() => {
-    if(user){
-        navigate('/admin')
-    }
-}, [user,navigate])
+
 
 
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
           axios.defaults.withCredentials = true;
-        const response = await axios.post('http://localhost:4000/auth/login', {
+        const response = await axios.post('http://localhost:4000/api/auth/login', {
             email,
             password
         })
 
-        console.log(response.data);
+       console.log(response)
         dispatch(setCredentials({ ...response}))
         navigate('/admin');
 }
@@ -43,7 +39,11 @@ catch (error) {
     console.error(error);
 }
 }
-
+useEffect(() => {
+  if(user){
+      navigate('/admin')
+  }
+}, [user,navigate])
   return (
     <Stack height={'100vh'} width={'100%'}  direction={'row'}>
         <CssBaseline />

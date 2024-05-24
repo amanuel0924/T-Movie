@@ -82,23 +82,22 @@ export const useCRUD = (baseUrl) => {
     setError(null)
     try {
       const response = await axios.post(baseUrl, newData)
-      setData((prevData) => [...prevData, response.data])
-      socket.emit(`${event}`)
+      socket.emit(`${event}`, response.data)
+      return response.data
     } catch (err) {
       setError(err)
     } finally {
       setLoading(false)
     }
   }
+  //i have status togler in my  i want poach request to have status togler
 
-  const updateData = async (id, updatedData) => {
+  const toglerStatus = async (id, event) => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.put(`${baseUrl}/${id}`, updatedData)
-      setData((prevData) =>
-        prevData.map((item) => (item.id === id ? response.data : item))
-      )
+      await axios.patch(`${baseUrl}/${id}`)
+      socket.emit(`${event}`, id)
     } catch (err) {
       setError(err)
     } finally {
@@ -106,12 +105,26 @@ export const useCRUD = (baseUrl) => {
     }
   }
 
-  const deleteData = async (id) => {
+  const updateData = async (id, updatedData, event) => {
+    setLoading(true)
+    setError(null)
+    try {
+      await axios.put(`${baseUrl}/${id}`, updatedData)
+
+      socket.emit(`${event}`, id)
+    } catch (err) {
+      setError(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const deleteData = async (id, event) => {
     setLoading(true)
     setError(null)
     try {
       await axios.delete(`${baseUrl}/${id}`)
-      setData((prevData) => prevData.filter((item) => item.id !== id))
+      socket.emit(`${event}`)
     } catch (err) {
       setError(err)
     } finally {
@@ -131,6 +144,7 @@ export const useCRUD = (baseUrl) => {
     createData,
     updateData,
     deleteData,
+    toglerStatus,
   }
 }
 

@@ -36,16 +36,6 @@ const Channels = () => {
                 </Stack>
             ))}
 
-          
-         
-          {/* <Stack spacing={1}  direction={{ xs: 'column', sm: 'row' }}alignItems={'center'} justifyContent={'start'} >
-          <Box sx={{border:isActive===9?'solid black 2px ':'none',borderRadius:'100%',p:1}}>
-          <Avatar  sx={{bgcolor: '#161638',p:isActive==9?4:0 }} >
-     <CnnIcon size={isActive==9?40:30} />
-          </Avatar >
-            </Box>
-          <Typography variant={isActive==9?'h6':'body1'}>CNN</Typography>
-          </Stack> */}
           </Box>
   )
 }

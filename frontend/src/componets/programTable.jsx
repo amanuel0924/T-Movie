@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback } from 'react';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -10,16 +10,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import useCRUD from '../services/channelServiec';
 import { toast } from 'react-toastify';
-import socket from '../socket';
-
-const ChannelTable = ({
+const ProgramTable = ({
   data = [], 
   openModal,
-  setName,
   setId,
   setDeleteId,
+  setTitle,
+  setDuration,
+  setDescription,
+  setCategory,
+  setType,
+  setVideoUrl,
+  setChannel,
+
 }) => {
-  const {toglerStatus,fetchData }=useCRUD("http://localhost:4000/api/channel")
+  const {toglerStatus }=useCRUD("http://localhost:4000/api/movie")
+
   const handleDelete = useCallback(
     (row) => {
       openModal();
@@ -31,22 +37,28 @@ const ChannelTable = ({
   const handleUpdate = useCallback(
     (row) => {
       openModal();
-      setName(row.name);
       setId(row.id);
+      setTitle(row.title);
+      setDuration(Number(row.duration) );
+      setDescription(row.description);
+      setCategory(Number(row.categoryId));
+      setType(Number(row.typeId));
+      setVideoUrl(row.videoUrl);
+      setChannel(Number(row.channelId));
     },
-    [openModal, setName, setId]
+    [openModal, setId, setTitle, setDuration, setDescription, setCategory, setType, setVideoUrl, setChannel]
   );
-
   const updateStatusHandler = useCallback(
-    async(id, ) => {
-    try {
-      await toglerStatus(id,'chanelToggle')
-      toast.success("chanel updated succesfully")
-     } catch (error) {
-       toast.error(error?.data?.message || error.message)
-     }
-   },
-   [toglerStatus]); 
+     async(id, ) => {
+     try {
+       await toglerStatus(id,'movieUpdated')
+       toast.success("movie updated succesfully")
+      } catch (error) {
+        toast.error(error?.data?.message || error.message)
+      }
+    },
+    [toglerStatus]); 
+
   const columns = useMemo(
     () => [
       {
@@ -55,8 +67,19 @@ const ChannelTable = ({
         size: 30,
       },
       {
-        accessorKey: 'name',
-        header: 'Name',
+        accessorKey: 'title',
+        header: 'Title',
+        size: 30,
+      },
+      
+      {
+        accessorKey: 'duration',
+        header: 'Duration',
+        size: 30,
+      },
+      {
+        accessorKey: 'description',
+        header: 'Description',
         size: 30,
       },
       {
@@ -98,13 +121,6 @@ const ChannelTable = ({
     [handleDelete, handleUpdate, updateStatusHandler]
   );
 
- useEffect(() => {
-    fetchData();
-     socket.on('chTogle', fetchData);
-
-   
-  }, [fetchData]);
-
   const table = useMaterialReactTable({
     columns,
     data,
@@ -122,4 +138,4 @@ const ChannelTable = ({
   return <MaterialReactTable table={table} />;
 };
 
-export default ChannelTable;
+export default ProgramTable;

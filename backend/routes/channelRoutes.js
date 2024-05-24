@@ -5,16 +5,17 @@ import {
   updateChannel,
   createChannel,
   deleteChannel,
+  statusTogler,
 } from "./../controller/channelController.js"
-import { validate, channelSchema } from "../middleware/validationMiddleware.js"
 
 const router = express.Router()
 
-router.route("/").get(getChannels).post(validate(channelSchema), createChannel)
+router.route("/").get(getChannels).post(createChannel)
 router
   .route("/:id")
   .get(getChannelById)
-  .put(validate(channelSchema), updateChannel)
+  .put(updateChannel)
   .delete(deleteChannel)
+  .patch(statusTogler)
 
 export default router

@@ -16,10 +16,6 @@ export const loginSchema = zod.object({
   password: zod.string().min(6),
 })
 
-export const channelSchema = zod.object({
-  name: zod.string().min(3),
-})
-
 export const movieSchema = zod.object({
   title: zod.string().min(3),
   duration: zod.number().min(1),
@@ -27,5 +23,5 @@ export const movieSchema = zod.object({
   channelId: zod.number(),
   typeId: zod.number(),
   categoryId: zod.number(),
-  videoUrl: zod.string().url(),
+  videoUrl: zod.string(),
 })

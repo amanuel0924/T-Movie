@@ -16,16 +16,14 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: process.env.ORIGIN,
+    origin: "https://t-movie-delta.vercel.app",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   },
 })
 app.use(
   cors({
-    origin: process.env.ORIGIN,
+    origin: "https://t-movie-delta.vercel.app",
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   })
 )
 

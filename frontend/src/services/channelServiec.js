@@ -1,63 +1,6 @@
 import axios from "axios"
 import { useState, useEffect, useCallback } from "react"
 import socket from "./../socket"
-const API_URL = "https://t-movie.onrender.com/api"
-
-const getChannels = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/channel`)
-    return response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const createChannel = async (name) => {
-  try {
-    const response = await axios.post(`${API_URL}/channel`, { name })
-    socket.emit("channelCreated")
-    return response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const deleteChannel = async (id) => {
-  try {
-    const response = await axios.delete(`${API_URL}/channel/${id}`)
-    socket.emit("channelDeleted")
-    return response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const updateChannel = async (id, name) => {
-  try {
-    const response = await axios.put(`${API_URL}/channel/${id}`, { name })
-    socket.emit("channelUpdated")
-    return response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const getChannelById = async (id) => {
-  try {
-    const response = await axios.get(`${API_URL}/channel/${id}`)
-    return response.data
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-export {
-  getChannels,
-  createChannel,
-  deleteChannel,
-  updateChannel,
-  getChannelById,
-}
 
 export const useCRUD = (baseUrl) => {
   const [data, setData] = useState([])

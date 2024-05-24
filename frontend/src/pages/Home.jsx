@@ -55,9 +55,7 @@ const data = [
   
 ];
 
-
-
-function ResponsiveGrid() {
+function Home() {
   const isXS = useMediaQuery('(max-width:600px)')
   
   return (
@@ -95,8 +93,8 @@ function ResponsiveGrid() {
       <CardContent sx={{  }}>
       
 
-    <Box id='00000000000000000' color={'white'} height={'100%'}  >
-    <Stack id='111111111111111' direction={'row'} position={'relative'} >
+    <Box  color={'white'} height={'100%'}  >
+    <Stack  direction={'row'} position={'relative'} >
        {
         isXS &&  <Stack >
         <LeafIcon size={30} />
@@ -130,10 +128,9 @@ function ResponsiveGrid() {
       </Stack>
     </Box>
     <Box 
-    
+
       sx={{
        zIndex: 1,
-       border:'red 1px solid',
         position: 'absolute',
         bottom: -90,
         right: 0,
@@ -257,7 +254,6 @@ function ResponsiveGrid() {
        }
       </Card>
     ))}
-     
   </Box>
         </Grid>
           }
@@ -266,4 +262,4 @@ function ResponsiveGrid() {
   );
 }
 
-export default ResponsiveGrid;
+export default Home;

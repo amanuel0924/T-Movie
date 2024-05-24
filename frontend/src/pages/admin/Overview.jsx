@@ -17,9 +17,9 @@ const Overview = () => {
   const { data:typecount,fetchData:fechtype } = useCRUD("http://localhost:4000/api/movie/type");
   
  
-  console.log("typecount",typecount)
-  console.log("catagoreycount",catagoreycount)
+
   const refechaData = useCallback(() => {
+    console.log('lllllllllllllllllll')
     fechChannel();
     fechMovie();
     fechtype();
@@ -27,20 +27,8 @@ const Overview = () => {
   }, [fechChannel, fechMovie, fechcat, fechtype]);
   
   useEffect(() => {
-    socket.on('channelCreated', refechaData())
-    socket.on('channelUpdated', refechaData())
-    socket.on('channelDeleted', refechaData())
-    socket.on('movieCreated', refechaData())
-    socket.on('movieUpdated', refechaData())
-    socket.on('movieDeleted', refechaData())
-    return () => {
-      socket.off('channelCreated', refechaData())
-      socket.off('channelUpdated', refechaData())
-      socket.off('channelDeleted', refechaData())
-      socket.off('movieCreated', refechaData ())
-      socket.off('movieUpdated', refechaData ())
-      socket.off('movieDeleted', refechaData ())
-    }
+    socket.on('onDataChange', refechaData)
+ 
   }
   , [refechaData])
 

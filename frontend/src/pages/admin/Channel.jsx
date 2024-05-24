@@ -48,7 +48,7 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
       toast.error("please fill all input")
     } else {
       try {
-        await createData({ name },'channelCreated')
+        await createData({ name },'datachange')
         setname('');
         handleClose();
         toast.success("channel created succesfully")
@@ -63,7 +63,7 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
       toast.error("please fill all input")
     } else {
       try {
-        await updateData(id, { name },'channelUpdated')
+        await updateData(id, { name },'datachange')
         setname('');
         setId('')
         handleClose();
@@ -83,7 +83,7 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
 
   const handleDelete = async () => { 
     try {
-      await deleteData(deleteId,'channelDeleted')
+      await deleteData(deleteId,'datachange')
       setDeleteId('')
       handleClose();
       toast.success("channel deleted succesfully")
@@ -92,18 +92,9 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
     }
   }
 
-
-
-
-
   useEffect(() => {
     fetchData();
-    socket.on('newChannel', fetchData)
-     socket.on('chDeleted', fetchData);
-     socket.on('chUpdated', fetchData);
-     socket.on('chToggle', fetchData);
-
-   
+    socket.on('onDataChange',fetchData)
   }, [fetchData]);
   return (
     <Paper sx={{padding:2}}  >

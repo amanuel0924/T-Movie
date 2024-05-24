@@ -51,7 +51,7 @@ const ProgramTable = ({
   const updateStatusHandler = useCallback(
      async(id, ) => {
      try {
-       await toglerStatus(id,'movieUpdated')
+       await toglerStatus(id,'datachange')
        toast.success("movie updated succesfully")
       } catch (error) {
         toast.error(error?.data?.message || error.message)

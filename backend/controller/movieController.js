@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client"
+import { io } from "./../server.js"
 
 const prisma = new PrismaClient()
 
@@ -46,6 +47,7 @@ export const getMovies = async (req, res) => {
       skip: pageSize * (page - 1),
     })
     const tolalMovies = await prisma.movie.count()
+
     res.status(200).json({
       page,
       pages: Math.ceil(count / pageSize),
@@ -77,6 +79,7 @@ export const statusTogler = async (req, res) => {
         status: !movie.status,
       },
     })
+
     res.json(updatedMovie)
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" })
@@ -84,6 +87,7 @@ export const statusTogler = async (req, res) => {
 }
 
 export const createMovie = async (req, res) => {
+  const io = req.io
   try {
     const {
       title,
@@ -105,6 +109,7 @@ export const createMovie = async (req, res) => {
         videoUrl,
       },
     })
+    io.emit("onDataChange")
     res.json(movie)
   } catch (error) {
     console.log(error)
@@ -113,6 +118,7 @@ export const createMovie = async (req, res) => {
 }
 
 export const deleteMovie = async (req, res) => {
+  const io = req.io
   try {
     const { id } = req.params
     await prisma.movie.delete({
@@ -120,8 +126,10 @@ export const deleteMovie = async (req, res) => {
         id: parseInt(id),
       },
     })
+    io.emit("onDataChange")
     res.json({ message: "Movie deleted" })
   } catch (error) {
+    console.error(error)
     res.status(500).json({ error: "Something went wrong" })
   }
 }
@@ -167,15 +175,6 @@ export const getMovieById = async (req, res) => {
       },
     })
     res.json(movie)
-  } catch (error) {
-    res.status(500).json({ error: "Something went wrong" })
-  }
-}
-
-const countMovies = async (req, res) => {
-  try {
-    const count = await prisma.movie.count()
-    res.json(count)
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" })
   }

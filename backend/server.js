@@ -33,25 +33,25 @@ app.use(morgan("dev"))
 
 app.use("/api/auth", authRoutes)
 app.use("/api/channel", channelRoutes)
-app.use("/api/movie", movieRoutes)
+app.use(
+  "/api/movie",
+  (req, res, next) => {
+    req.io = io
+    next()
+  },
+  movieRoutes
+)
 app.use("/api/typeandcategory", typeCategory)
 
 io.on("connect", (socket) => {
   console.log("a user connected")
-  socket.on("channelCreated", (data) => {
-    io.emit("newChannel")
-  })
-  socket.on("channelDeleted", (data) => {
-    io.emit("chDeleted")
-  })
-  socket.on("channelUpdated", (data) => {
-    io.emit("chUpdated")
-  })
-  socket.on("channelToggle", (data) => {
-    io.emit("chToggle", data)
+  // })
+  socket.on("datachange", (data) => {
+    io.emit("onDataChange")
   })
 })
 
+export { io }
 server.listen(4000, () => {
   console.log("listening on port:4000")
 })

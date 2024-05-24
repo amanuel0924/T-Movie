@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useMemo, useCallback, useEffect } from 'react';
+import { useMemo, useCallback,  } from 'react';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -10,7 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import useCRUD from '../services/channelServiec';
 import { toast } from 'react-toastify';
-import socket from '../socket';
+
 
 const ChannelTable = ({
   data = [], 
@@ -19,7 +19,7 @@ const ChannelTable = ({
   setId,
   setDeleteId,
 }) => {
-  const {toglerStatus,fetchData }=useCRUD("http://localhost:4000/api/channel")
+  const {toglerStatus}=useCRUD("http://localhost:4000/api/channel")
   const handleDelete = useCallback(
     (row) => {
       openModal();
@@ -40,7 +40,7 @@ const ChannelTable = ({
   const updateStatusHandler = useCallback(
     async(id, ) => {
     try {
-      await toglerStatus(id,'chanelToggle')
+      await toglerStatus(id,'datachange')
       toast.success("chanel updated succesfully")
      } catch (error) {
        toast.error(error?.data?.message || error.message)
@@ -98,12 +98,7 @@ const ChannelTable = ({
     [handleDelete, handleUpdate, updateStatusHandler]
   );
 
- useEffect(() => {
-    fetchData();
-     socket.on('chTogle', fetchData);
 
-   
-  }, [fetchData]);
 
   const table = useMaterialReactTable({
     columns,

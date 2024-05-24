@@ -1,4 +1,4 @@
-import  { useState,useEffect} from "react"
+import  { useState,useEffect,useCallback} from "react"
 import {  Box, Paper,Modal,Typography, TextField, Button, Stack } from "@mui/material"
 import PagesHeader from "../../componets/PagesHeader"
 import {useCRUD} from './../../services/channelServiec'
@@ -55,7 +55,8 @@ const Program = () => {
   };
   const handleOpen = () => setOpen(true);
   
-  const { data,fetchData,updateData,deleteData,createData,loading } = useCRUD(`${API_URL}/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
+  const { data,fetchData,loading } = useCRUD(`${API_URL}/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
+  const { updateData,createData,deleteData} = useCRUD(`${API_URL}/movie`);
   const { data: types,fetchData:fechtype} = useCRUD(`${API_URL}/typeandcategory/types`);
   const { data: categorys,fetchData:fechCat} = useCRUD(`${API_URL}/typeandcategory/categories`);
   const { data: channels,fetchData:fechChannel} = useCRUD(`${API_URL}/channel`);
@@ -67,7 +68,7 @@ const Program = () => {
       toast.error("please fill all input")
     } else {
       try {
-        await createData({  title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'movieCreated')
+        await createData({  title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'datachange')
         toast.success("movie created succesfully")
         handleClose();
       } catch (error) {
@@ -81,7 +82,7 @@ const Program = () => {
       toast.error("please fill all input")
     } else {
       try {
-        await updateData(id, { title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'movieUpdated')
+        await updateData(id, { title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'datachange')
         handleClose();
         toast.success("movie updated succesfully")
       } catch (error) {
@@ -94,7 +95,7 @@ const Program = () => {
 
   const handleDelete = async () => { 
     try {
-      await deleteData(deleteId,'movieDeleted')
+      await deleteData(deleteId,'datachange')
       handleClose();
       toast.success("movie deleted succesfully")
     } catch (error) {
@@ -102,29 +103,16 @@ const Program = () => {
     }
   }
 
- 
-
-  useEffect(() => {
+  const fetchAll = useCallback(() => {
     fetchData();
     fechtype();
     fechCat();
     fechChannel();
-    socket.on('channelCreated', fechChannel());
-    socket.on('channelDeleted', fechChannel());
-    socket.on('channelUpdated', fechChannel());
-    socket.on('movieCreated', fetchData());
-    socket.on('movieDeleted', fetchData());
-    socket.on('movieUpdated', fetchData());
+  }, [ fetchData,fechtype,fechCat,fechChannel]);
 
-    return () => {
-      socket.off('channelCreated', fechChannel());
-      socket.off('channelDeleted', fechChannel());
-      socket.off('channelUpdated', fechChannel());
-      socket.off('movieCreated', fetchData());
-      socket.off('movieDeleted', fetchData());
-      socket.off('movieUpdated', fetchData());
-    }
-  }, [fetchData,fechtype,fechCat,fechChannel]);
+  useEffect(() => {
+    socket.on('onDataChange',fetchAll );
+  }, [fetchAll]);
   return (
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px',}}>

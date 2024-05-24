@@ -1,7 +1,7 @@
 import axios from "axios"
 import { useState, useEffect, useCallback } from "react"
 import socket from "./../socket"
-const API_URL = "http://localhost:4000/api"
+const API_URL = "https://t-movie.onrender.com/api"
 
 const getChannels = async () => {
   try {

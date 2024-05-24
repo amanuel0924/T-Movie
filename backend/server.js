@@ -16,13 +16,13 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "https://t-movie.onrender.com",
+    origin: "http://localhost:5173/",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "https://t-movie.onrender.com",
+    origin: "http://localhost:5173/",
     credentials: true,
   })
 )
@@ -52,7 +52,7 @@ app.use("/api/typeandcategory", typeCategory)
 
 io.on("connect", (socket) => {
   console.log("a user connected")
-  // })
+
   socket.on("datachange", (data) => {
     io.emit("onDataChange")
   })

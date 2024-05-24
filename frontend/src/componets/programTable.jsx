@@ -24,7 +24,7 @@ const ProgramTable = ({
   setChannel,
 
 }) => {
-  const {toglerStatus }=useCRUD("http://localhost:4000/api/movie")
+  const {toglerStatus }=useCRUD("/api/movie")
 
   const handleDelete = useCallback(
     (row) => {

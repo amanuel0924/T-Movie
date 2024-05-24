@@ -41,7 +41,7 @@ const Channel = () => {
     setDeleteId('')
   }
 
-const API_URL = `http://localhost:4000/api/channel${keyword?`?keyword=${keyword}`:''}`
+const API_URL = `/api/channel${keyword?`?keyword=${keyword}`:''}`
 const { data: channel,fetchData,createData,loading,updateData,deleteData } = useCRUD(API_URL);
   const handleCreate = async () => {
     if (!name) {

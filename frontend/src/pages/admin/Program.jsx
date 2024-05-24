@@ -25,7 +25,7 @@ const style = {
   p: 2,
 
 };
-const API_URL = "http://localhost:4000/api"
+
 const Program = () => {
   const { pageNumber, keyword } = useParams()
   const [open, setOpen] = useState(false);
@@ -55,11 +55,11 @@ const Program = () => {
   };
   const handleOpen = () => setOpen(true);
   
-  const { data,fetchData,loading } = useCRUD(`${API_URL}/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
-  const { updateData,createData,deleteData} = useCRUD(`${API_URL}/movie`);
-  const { data: types,fetchData:fechtype} = useCRUD(`${API_URL}/typeandcategory/types`);
-  const { data: categorys,fetchData:fechCat} = useCRUD(`${API_URL}/typeandcategory/categories`);
-  const { data: channels,fetchData:fechChannel} = useCRUD(`${API_URL}/channel`);
+  const { data,fetchData,loading } = useCRUD(`/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
+  const { updateData,createData,deleteData} = useCRUD(`/api/movie`);
+  const { data: types,fetchData:fechtype} = useCRUD(`/api/typeandcategory/types`);
+  const { data: categorys,fetchData:fechCat} = useCRUD(`/api/typeandcategory/categories`);
+  const { data: channels,fetchData:fechChannel} = useCRUD(`/api/channel`);
 
 
 

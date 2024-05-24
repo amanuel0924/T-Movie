@@ -16,13 +16,13 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://t-movie.onrender.com",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://t-movie.onrender.com",
     credentials: true,
   })
 )
@@ -32,7 +32,14 @@ app.use(cookieParser())
 app.use(morgan("dev"))
 
 app.use("/api/auth", authRoutes)
-app.use("/api/channel", channelRoutes)
+app.use(
+  "/api/channel",
+  (req, res, next) => {
+    req.io = io
+    next()
+  },
+  channelRoutes
+)
 app.use(
   "/api/movie",
   (req, res, next) => {

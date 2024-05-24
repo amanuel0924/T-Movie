@@ -61,7 +61,7 @@ export default function Dashboard() {
     
       try {
             axios.defaults.withCredentials = true;
-           await axios.post('http://localhost:4000/api/auth/logout')
+           await axios.post('/api/auth/logout')
           dispatch(logout())
           navigate('/');
   }

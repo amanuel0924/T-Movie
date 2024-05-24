@@ -11,15 +11,14 @@ import MyPieChart from "../../componets/Pichart";
 import ProgramLineChart from "../../componets/LIneChart";
 
 const Overview = () => {
-  const { data:channel,fetchData:fechChannel } = useCRUD("http://localhost:4000/api/channel");
-  const { data:movie,fetchData:fechMovie } = useCRUD("http://localhost:4000/api/movie");
-  const { data:catagoreycount,fetchData:fechcat } = useCRUD("http://localhost:4000/api/movie/grouped");
-  const { data:typecount,fetchData:fechtype } = useCRUD("http://localhost:4000/api/movie/type");
+  const { data:channel,fetchData:fechChannel } = useCRUD("api/channel");
+  const { data:movie,fetchData:fechMovie } = useCRUD("/api/movie");
+  const { data:catagoreycount,fetchData:fechcat } = useCRUD("/api/movie/grouped");
+  const { data:typecount,fetchData:fechtype } = useCRUD("/api/movie/type");
   
  
 
   const refechaData = useCallback(() => {
-    console.log('lllllllllllllllllll')
     fechChannel();
     fechMovie();
     fechtype();

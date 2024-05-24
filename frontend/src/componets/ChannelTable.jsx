@@ -19,7 +19,7 @@ const ChannelTable = ({
   setId,
   setDeleteId,
 }) => {
-  const {toglerStatus}=useCRUD("http://localhost:4000/api/channel")
+  const {toglerStatus}=useCRUD("/api/channel")
   const handleDelete = useCallback(
     (row) => {
       openModal();

@@ -22,6 +22,7 @@ export const getChannels = async (req, res) => {
 }
 
 export const createChannel = async (req, res) => {
+  const io = req.io
   try {
     console.log("createChannel")
     console.log(req.body)
@@ -32,6 +33,7 @@ export const createChannel = async (req, res) => {
         name,
       },
     })
+    io.emit("onDataChange")
     res.json(channel)
   } catch (error) {
     console.log(error)
@@ -40,6 +42,7 @@ export const createChannel = async (req, res) => {
 }
 
 export const deleteChannel = async (req, res) => {
+  const io = req.io
   try {
     const { id } = req.params
     await prisma.channel.delete({
@@ -47,6 +50,7 @@ export const deleteChannel = async (req, res) => {
         id: parseInt(id),
       },
     })
+    io.emit("onDataChange")
     res.json({ message: "Channel deleted" })
   } catch (error) {
     console.log(error)
@@ -115,6 +119,7 @@ export const statusTogler = async (req, res) => {
         status: !channel.status,
       },
     })
+
     res.json(updatedChanel)
   } catch (error) {
     res.status(500).json({ error: "Something went wrong" })

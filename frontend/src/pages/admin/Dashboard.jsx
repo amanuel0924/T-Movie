@@ -28,7 +28,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from './../../redux/authSlice';
 import { toast } from 'react-toastify';
 import { Button } from '@mui/material';
-import { baseURL } from '../../services/api';
+import { baseURL } from '../../socket';
 const drawerWidth = 240;
 
 const lists = [

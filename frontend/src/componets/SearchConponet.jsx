@@ -15,6 +15,7 @@ const SearchComponent = ({ searchQuery, setSearchQuery }) => {
 
   const handleSearchClick = () => {
     setShowInput(!showInput);
+    setSearchQuery("")
   };
 
 
@@ -28,12 +29,12 @@ const SearchComponent = ({ searchQuery, setSearchQuery }) => {
       {showInput && (
         <TextField
           autoFocus
-          variant="filled"
+          variant="standard"
           size="small"
           placeholder="Search..."
           value={searchQuery}
           onChange={handleInputChange}
-          sx={{ width:  '200px',bgcolor:'#fff',borderRadius:'5px',border:'none', m: 1 }}
+          sx={{ width:  '200px',bgcolor:'lightgray',borderRadius:'5px',border:'none',padding:'5px' }}
         />
       )}
       {showInput && (

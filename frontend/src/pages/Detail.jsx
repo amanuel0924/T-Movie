@@ -120,7 +120,7 @@ function Detail() {
         cursor:'pointer'
       }}} onClick={()=>handleCatagory('popular')}>
          <Typography variant={'subtitle1'} sx={{color:'white'}}>Popular</Typography>
-         <ActiveBox hight={'2px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/popular'}/>
+         <ActiveBox hight={'3px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/popular'}/>
       </Box>
       <Box component={'div'} sx={{ position: 'relative',
         
@@ -129,7 +129,7 @@ function Detail() {
         cursor:'pointer'
       }}} onClick={()=>handleCatagory('recommended')}>
          <Typography variant={'subtitle1'} sx={{color:'white'}}>Recommended</Typography>
-         <ActiveBox hight={'2px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/recommended'}/>
+         <ActiveBox hight={'3px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/recommended'}/>
       </Box>
       <Box component={'div'} sx={{ position: 'relative',
       '&:hover .hoverBox': {
@@ -137,7 +137,7 @@ function Detail() {
         cursor:'pointer'
       }}} onClick={()=>handleCatagory('featured')}>
          <Typography variant={'subtitle1'} sx={{color:'white'}}>Featured</Typography>
-         <ActiveBox hight={'2px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/featured'}/>
+         <ActiveBox hight={'3px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/featured'}/>
       </Box>
               </Stack>
               </Stack>

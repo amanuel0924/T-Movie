@@ -11,6 +11,7 @@ import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import TimeAndWeather from '../componets/TimeAndWeather';
 import SideNav from '../componets/SideNav';
 import ChannelsNav from '../componets/Channels';
+import { useNavigate } from 'react-router-dom';
 
 
 const data = [
@@ -57,7 +58,7 @@ const data = [
 
 function Home() {
   const isXS = useMediaQuery('(max-width:600px)')
-  
+  const navigate = useNavigate();
   return (
     <Box sx={{ height: '100vh',backgroundColor: '#0E0E30' }}>
       <CssBaseline />
@@ -156,7 +157,7 @@ function Home() {
            <HboIcon size={50}/>
             </Box>
           </AspectRatio>
-          <Box  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1, py:item.current?4:1}}>
+          <Box component={'div'}  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1, py:item.current?4:1}} onClick={()=>navigate('/detail')}>
             <Typography variant={item.current?'h5':'h6'}  >{item.title}</Typography>
             <Typography level="body-sm">{item.description}</Typography>
           </Box>
@@ -238,7 +239,7 @@ function Home() {
     {data.map((item) => (
       <Card   size="large"  key={item.title} sx={{  borderRadius:'3px',  backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.9)',height:item.current ? '100%' :'90%' ,border:'solid 1px #0F102D',p:1,position:'relative'}}>
         <AspectRatio  ratio={1.5 } sx={{ minWidth: 85 }}>
-          <Box  color={'white'}  bgcolor={'#0F102D'}>
+          <Box component={'div'}  color={'white'}  bgcolor={'#0F102D'}  onClick={()=>navigate('/detail')}>
          <HboIcon size={50}/>
           </Box>
         </AspectRatio>

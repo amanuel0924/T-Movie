@@ -74,7 +74,6 @@ function Home() {
             position: 'relative',
           }}
         >
-          
      <Card  sx={{ height:{xs:'100%',sm:'80%'},width:'100%',border:'none', borderRadius:'0', position:'relative' }}>
       <CardCover>
         <img

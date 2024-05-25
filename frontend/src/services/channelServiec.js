@@ -33,7 +33,6 @@ export const useCRUD = (baseUrl) => {
       setLoading(false)
     }
   }
-  //i have status togler in my  i want poach request to have status togler
 
   const toglerStatus = async (id, event) => {
     setLoading(true)

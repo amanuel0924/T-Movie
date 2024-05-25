@@ -9,12 +9,13 @@ import useCRUD from "../../services/channelServiec";
 import socket from "../../socket";
 import MyPieChart from "../../componets/Pichart";
 import ProgramLineChart from "../../componets/LIneChart";
+import { baseURL } from "../../socket";
 
 const Overview = () => {
-  const { data:channel,fetchData:fechChannel } = useCRUD("api/channel");
-  const { data:movie,fetchData:fechMovie } = useCRUD("/api/movie");
-  const { data:catagoreycount,fetchData:fechcat } = useCRUD("/api/movie/grouped");
-  const { data:typecount,fetchData:fechtype } = useCRUD("/api/movie/type");
+  const { data:channel,fetchData:fechChannel } = useCRUD(`${baseURL}/api/channel`);
+  const { data:movie,fetchData:fechMovie } = useCRUD(`${baseURL}/api/movie`);
+  const { data:catagoreycount,fetchData:fechcat } = useCRUD(`${baseURL}/api/movie/grouped`);
+  const { data:typecount,fetchData:fechtype } = useCRUD(`${baseURL}/api/movie/type`);
   
  
 

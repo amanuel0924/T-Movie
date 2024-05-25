@@ -8,30 +8,29 @@ import authRoutes from "./routes/authRoutes.js"
 import channelRoutes from "./routes/channelRoutes.js"
 import movieRoutes from "./routes/movieRoute.js"
 import typeCategory from "./routes/TypeAndCategory.js"
-import path from "path"
 
 dotenv.config()
 import { Server } from "socket.io"
-const __dirname = path.resolve()
+// const __dirname = path.resolve()
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "https://t-movie-delta.vercel.app",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://t-movie-delta.vercel.app",
     credentials: true,
   })
 )
 
-app.use(express.static(path.join(__dirname, "/frontend/dist")))
-app.get("*", (req, res) =>
-  res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
-)
+// app.use(express.static(path.join(__dirname, "/frontend/dist")))
+// app.get("*", (req, res) =>
+//   res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
+// )
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan("dev"))

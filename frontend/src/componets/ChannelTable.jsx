@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import useCRUD from '../services/channelServiec';
 import { toast } from 'react-toastify';
+import { baseURL } from '../socket';
 
 
 const ChannelTable = ({
@@ -19,7 +20,7 @@ const ChannelTable = ({
   setId,
   setDeleteId,
 }) => {
-  const {toglerStatus}=useCRUD("/api/channel")
+  const {toglerStatus}=useCRUD(`${baseURL}/api/channel`)
   const handleDelete = useCallback(
     (row) => {
       openModal();

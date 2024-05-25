@@ -1,6 +1,7 @@
 import  { useState,useEffect} from "react"
 import {  Box, Paper,Modal,Typography, TextField, Button  } from "@mui/material"
 import PagesHeader from "../../componets/PagesHeader"
+import { baseURL } from "../../socket";
 
 
 import Loader from '../../componets/Loader';
@@ -41,7 +42,7 @@ const Channel = () => {
     setDeleteId('')
   }
 
-const API_URL = `/api/channel${keyword?`?keyword=${keyword}`:''}`
+const API_URL = `${baseURL}/api/channel${keyword?`?keyword=${keyword}`:''}`
 const { data: channel,fetchData,createData,loading,updateData,deleteData } = useCRUD(API_URL);
   const handleCreate = async () => {
     if (!name) {

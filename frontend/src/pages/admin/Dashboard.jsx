@@ -28,6 +28,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from './../../redux/authSlice';
 import { toast } from 'react-toastify';
 import { Button } from '@mui/material';
+import { baseURL } from '../../services/api';
 const drawerWidth = 240;
 
 const lists = [
@@ -61,7 +62,7 @@ export default function Dashboard() {
     
       try {
             axios.defaults.withCredentials = true;
-           await axios.post('/api/auth/logout')
+           await axios.post(`${baseURL}/api/auth/logout`)
           dispatch(logout())
           navigate('/');
   }

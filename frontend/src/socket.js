@@ -1,6 +1,8 @@
 import { io } from "socket.io-client"
 
-const socket = io("https://t-movie.onrender.com", {
+export const baseURL = "https://t-movie.onrender.com"
+
+const socket = io(baseURL, {
   withCredentials: true,
 })
 

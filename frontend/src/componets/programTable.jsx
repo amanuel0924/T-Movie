@@ -10,6 +10,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 import useCRUD from '../services/channelServiec';
 import { toast } from 'react-toastify';
+import { baseURL } from '../socket';
 const ProgramTable = ({
   data = [], 
   openModal,
@@ -24,7 +25,7 @@ const ProgramTable = ({
   setChannel,
 
 }) => {
-  const {toglerStatus }=useCRUD("/api/movie")
+  const {toglerStatus }=useCRUD(`${baseURL}/api/movie`)
 
   const handleDelete = useCallback(
     (row) => {

@@ -12,6 +12,7 @@ import Loader from '../../componets/Loader';
 import ProgramTable from "../../componets/programTable";
 import Paginate from "../../componets/Pagination";
 import { useParams } from "react-router-dom";
+import { baseURL } from "../../socket";
 
 const style = {
   position: 'absolute',
@@ -55,11 +56,11 @@ const Program = () => {
   };
   const handleOpen = () => setOpen(true);
   
-  const { data,fetchData,loading } = useCRUD(`/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
-  const { updateData,createData,deleteData} = useCRUD(`/api/movie`);
-  const { data: types,fetchData:fechtype} = useCRUD(`/api/typeandcategory/types`);
-  const { data: categorys,fetchData:fechCat} = useCRUD(`/api/typeandcategory/categories`);
-  const { data: channels,fetchData:fechChannel} = useCRUD(`/api/channel`);
+  const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
+  const { updateData,createData,deleteData} = useCRUD(`${baseURL}/api/movie`);
+  const { data: types,fetchData:fechtype} = useCRUD(`${baseURL}/api/typeandcategory/types`);
+  const { data: categorys,fetchData:fechCat} = useCRUD(`${baseURL}/api/typeandcategory/categories`);
+  const { data: channels,fetchData:fechChannel} = useCRUD(`${baseURL}/api/channel`);
 
 
 

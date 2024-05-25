@@ -153,6 +153,12 @@ export const CnnIcon = ({size}) => {
 
 
 
+
+
+
+
+
+
 LeafIcon.propTypes = {
   size: PropTypes.number,
 };

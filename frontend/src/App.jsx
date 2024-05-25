@@ -9,10 +9,10 @@ function App() {
   return (
     <div>
       <BrowserRouter>
-        <Routes>
+      <Routes>
           <Route path="/*" element={<Layout />} />
           <Route path="/login" element={<Login />} />
-          <Route path="" element={<PrivateRouter />}>
+          <Route element={<PrivateRouter />}>
             <Route path="/admin/*" element={<Dashboard />} />
           </Route>
         </Routes>

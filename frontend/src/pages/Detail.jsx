@@ -17,6 +17,7 @@ import SearchComponent from '../componets/SearchConponet';
 import ActiveBox from '../componets/ActiveBox';
 import Loader from '../componets/Loader';
 import { useNavigate ,useParams,useLocation} from 'react-router-dom';
+import Img from '../assets/ava.png';
 
 
 
@@ -73,7 +74,7 @@ function Detail() {
         }}
       />
       <CardContent>
-      {loading ? <Loader/> : error ? <Typography variant='h4' color='error'>{error}</Typography> : ( <Stack   height={'100%'} width={'100%'}>
+      {loading ? <Loader/> : error ? <Typography variant='h4' color='error'>{'some thing wrong'}</Typography> : ( <Stack   height={'100%'} width={'100%'}>
             <Stack
             direction={'column'}
             height={{xs:'20%',sm:'25%'}}
@@ -81,7 +82,7 @@ function Detail() {
             >
             <Stack direction={'row'} justifyContent={'space-between'}>
             <Stack px={{xs:0,sm:5}} spacing={2} direction={'row'} alignItems={'center'} >
-             {isXS && <ChevronIcon  size={35}  />}
+             {isXS && <Box sx={{cursor:'pointer'}}  onclick={()=>navigate('/')} component={'div'}><ChevronIcon  size={35}  /></Box>}
              <Box component={'div'} onClick={()=>navigate('/detail')} sx={{cursor:'pointer'}}>
              <Typography   variant={isXS?'h6':'h5'} sx={{color:'white'}}>Movies</Typography>
              </Box>
@@ -92,7 +93,7 @@ function Detail() {
                </TimeAndWeather>}
               <Stack direction={'row'} pr={5} alignItems={'center'} spacing={2}>
               <SearchComponent searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>
-              <Avatar sx={{ bgcolor: 'purple' }}>OP</Avatar>
+              <Avatar alt="Remy Sharp" src={Img} />
               </Stack>
               </Stack>
             </Stack>

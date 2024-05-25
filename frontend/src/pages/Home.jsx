@@ -9,52 +9,41 @@ import { useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import TimeAndWeather from '../componets/TimeAndWeather';
-import SideNav from '../componets/SideNav';
 import ChannelsNav from '../componets/Channels';
 import { useNavigate } from 'react-router-dom';
+import Img from '../assets/ava.png';
+import LgTypeCard from '../componets/LgTypeCard';
 
+import SportsBaseballIcon from "@mui/icons-material/SportsBaseball"
+import TheatersIcon from '@mui/icons-material/Theaters';
+import PodcastsIcon from '@mui/icons-material/Podcasts';
+import TvIcon from '@mui/icons-material/Tv';
+ const data = [
+  {
+    icon: < PodcastsIcon sx={{fontSize:50}}  />,
+    title: "Live tv",
+    description: "4.21M views",
+  },
+  {
+    icon: <TheatersIcon sx={{fontSize:50}} />,
+    title: "Movies",
+    description: "4.74M views",
+  },
+  {
 
-const data = [
-  {
-    src: 'https://images.unsplash.com/photo-1502657877623-f66bf489d236',
-    title: 'Night view',
-    description: '4.21M views',
-    current: true,
+    title: "Sport",
+    description: "3.98M views",
+    icon: <SportsBaseballIcon sx={{fontSize:50}} />,
   },
   {
-    src: 'https://images.unsplash.com/photo-1527549993586-dff825b37782',
-    title: 'Lake view',
-    description: '4.74M views',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1532614338840-ab30cf10ed36',
-    title: 'Sport13',
-    description: '3.98M views',
-   
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1527549993586-dff825b37782',
-    title: 'Sport2',
-    description: '4.74M views',
+    icon: <TvIcon sx={{fontSize:50}} />,
+    title: "Tv Show",
+    description: "4.74M views",
     new: true,
   },
-  {
-    src: 'https://images.unsplash.com/photo-1527549993586-dff825b37782',
-    title: 'Sport1',
-    description: '4.74M views',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1532614338840-ab30cf10ed36',
-    title: 'Mountain ',
-    description: '3.98M views',
-  },
-  {
-    src: 'https://images.unsplash.com/photo-1532614338840-ab30cf10ed36',
-    title: 'Mountain view',
-    description: '3.98M views',
-  },
-  
-];
+]
+
+
 
 function Home() {
   const isXS = useMediaQuery('(max-width:600px)')
@@ -62,15 +51,15 @@ function Home() {
   return (
     <Box sx={{ height: '100vh',backgroundColor: '#0E0E30' }}>
       <CssBaseline />
-      <Grid container sx={{ height: '100%', }}>
+      <Grid container sx={{ height: '100%', width:'100%' }}>
         <Grid
           item
           xs={12}
-          sm={8}
+          sm={9}
           sx={{
             backgroundColor: '#0E0E30',
             order: { xs: 1, sm: 4 },
-            height: {xs:'45%',sm:'100%'},
+            height: {xs:'50%',sm:'100%'},
             position: 'relative',
           }}
         >
@@ -85,7 +74,6 @@ function Home() {
       </CardCover>
       <CardCover
         sx={{
-         
           background:
             'linear-gradient(344deg, rgba(0,0,0,0) 15%, rgba(14,14,48,1) 85%), linear-gradient(160deg, rgba(0,0,0,0) 50%, rgba(14,14,48,1) 80%)',
         }}
@@ -103,7 +91,7 @@ function Home() {
       <Stack spacing={3} top={1} right={1} position={'absolute'} direction={'row'} alignItems={'center'}>
         <TimeAndWeather/>
        <Avatar sx={{backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.5)'}}> <SearchIcon/></Avatar>
-        {!isXS &&   <Avatar sx={{ bgcolor: 'purple',  }}>OP</Avatar>}
+        {!isXS &&  <Avatar alt="Remy Sharp" src={Img} />}
       </Stack>
       </Stack>
       <Stack pt={{xs:5, sm:0}}  ><HboIcon  size={isXS?40:50}/></Stack>
@@ -127,67 +115,9 @@ function Home() {
           </Stack>
       </Stack>
     </Box>
-    <Box 
-      sx={{
-       zIndex: 1,
-        position: 'absolute',
-        bottom: -90,
-        right: 0,
-        width: '100%',
-        height:'290px',
-        gap: 6,
-        left: 0,
-        p: 0.5,
-        margin: 0,
-        alignItems: 'center',
-        overflow: 'auto',
-        display: { xs: 'none', sm: 'flex' },
-        scrollSnapType: 'x mandatory',
-        '& > *': {
-          scrollSnapAlign: 'center',
-        },
-        '::-webkit-scrollbar': { display: 'none' },
-      }}
-    >
-      {data.map((item) => (
-        <Card   size="large"  key={item.title} sx={{  borderRadius:'3px',  backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.9)',height:item.current ? '270px' :'230px' ,border:'solid 1px #0F102D',position:'relative'}}>
-          <AspectRatio  ratio={1.5 } sx={{ minWidth: 180 }}>
-            <Box  color={'white'}  bgcolor={'#0F102D'}>
-           <HboIcon size={50}/>
-            </Box>
-          </AspectRatio>
-          <Box component={'div'}  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1, py:item.current?4:1}} onClick={()=>navigate('/detail')}>
-            <Typography variant={item.current?'h5':'h6'}  >{item.title}</Typography>
-            <Typography level="body-sm">{item.description}</Typography>
-          </Box>
-         {
-          item.current &&   <Box width={'30%'} height={'10px'} sx={{position:'absolute'}} bottom={-9} left={'33%'} bgcolor={'white' } >
-          </Box>
-         }
-        </Card>
-      ))}
-       
-    </Box>
+    <LgTypeCard data={data}/>
       </CardContent>
-     
     </Card>
-    
-        </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={1}
-          sx={{
-            backgroundColor: '#0E0E30',
-            order: { xs: 4, sm: 1 },
-            height: {xs:'7%',sm:'100%'},
-            position:'sticky',
-          }}
-        >
-         <SideNav>
-{isXS &&   <Avatar sx={{ bgcolor: 'purple',  }}>OP</Avatar>}
-
-         </SideNav>
         </Grid>
         <Grid
           item
@@ -204,26 +134,16 @@ function Home() {
         {isXS &&  <Grid
           component={Grid}
           item
+        height={'30%'}
           xs={12}
           sx={{
             backgroundColor: '#0E0E30',
-           
-            order: { xs: 3 },
-            height: {xs:'25%',sm:'100%'}
-          }}
-        >
+            order: { xs: 3 }
+          }}>
             <Box 
-    
     sx={{
-    
-      bottom: -90,
-      right: 0,
       width: '100%',
-      height:'100%',
       gap: 6,
-      left: 0,
-      p: 0.5,
-      margin: 0,
       alignItems: 'center',
       overflow: 'auto',
       display: 'flex' ,
@@ -236,13 +156,13 @@ function Home() {
   >
     
     {data.map((item) => (
-      <Card   size="large"  key={item.title} sx={{  borderRadius:'3px',  backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.9)',height:item.current ? '100%' :'90%' ,border:'solid 1px #0F102D',p:1,position:'relative'}}>
-        <AspectRatio  ratio={1.5 } sx={{ minWidth: 85 }}>
-          <Box component={'div'}  color={'white'}  bgcolor={'#0F102D'}  onClick={()=>navigate('/detail')}>
-         <HboIcon size={50}/>
+      <Card    size="large" key={item.title} sx={{  borderRadius:'3px',  backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.9)',height:item.current ? '100%' :'90%' ,border:'solid 1px #0F102D',p:1,position:'relative',}}>
+        <AspectRatio   ratio={1.5 } sx={{ minWidth: 85 }}>
+          <Box component={'div'}  color={'white'} sx={{cursor:'pointer'}}  bgcolor={'#0F102D'}  onClick={()=>navigate('/detail')}>
+         {item.icon}
           </Box>
         </AspectRatio>
-        <Box  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1, }}>
+        <Box  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1,cursor:'pointer' }} component={'div'} onClick={navigate('/detail')}>
           <Typography variant={'subtitle1'}  >{item.title}</Typography>
           <Typography variant='subtitle2'>{item.description}</Typography>
         </Box>

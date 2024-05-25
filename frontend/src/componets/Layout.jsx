@@ -13,13 +13,14 @@ const location = useLocation();
   return (
     <>
     <CssBaseline />
-    {!isXS ? <LeftSideNav />:!location.pathname.includes('detail') && <BottomNav />}
+    {!isXS && <LeftSideNav />}
+    {!isXS || !location.pathname.includes('detail') && <BottomNav />}
     <main style={{ marginLeft: isXS ? 0 : 150, px: 16 }}>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/detail" element={<Detail />} />
-        <Route path="/detail/:category" element={<Detail />} />
-      </Routes>
+    <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="detail" element={<Detail />} />
+          <Route path="detail/:category" element={<Detail />} />
+        </Routes>
     </main>
   </>
   );

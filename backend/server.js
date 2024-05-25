@@ -17,13 +17,13 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "https://t-movie-a2k2ow3j5-amanuels-projects.vercel.app/",
+    origin: "*",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "https://t-movie-a2k2ow3j5-amanuels-projects.vercel.app/",
+    origin: "*",
     credentials: true,
   })
 )

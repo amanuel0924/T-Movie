@@ -11,22 +11,23 @@ import typeCategory from "./routes/TypeAndCategory.js"
 
 dotenv.config()
 import { Server } from "socket.io"
-
+const __dirname = path.resolve()
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "https://t-movie-delta.vercel.app",
+    origin: "http://localhost:5173",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "https://t-movie-delta.vercel.app",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 )
 
+app.use(express.static(path.join(__dirname, "/frontend/dist")))
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan("dev"))

@@ -32,7 +32,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(morgan("dev"))
 
-app.use(express.static(path.join(__dirname, "/frontend/dist")))
+// app.use(express.static(path.join(__dirname, "/frontend/dist")))
 
 app.use("/api/auth", authRoutes)
 app.use(

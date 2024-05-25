@@ -11,19 +11,18 @@ import typeCategory from "./routes/TypeAndCategory.js"
 
 dotenv.config()
 import { Server } from "socket.io"
-import path from "path"
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "https://t-movie-delta.vercel.app/",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "*",
+    origin: "https://t-movie-delta.vercel.app/",
     credentials: true,
   })
 )

@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-
 import { Box, Button, Grid, Stack, Typography } from '@mui/material'
 import { formatDuration } from '../utils/utils'
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
@@ -9,6 +8,7 @@ import { useMediaQuery } from '@mui/material';
 import Card from '@mui/joy/Card';
 import CardCover from '@mui/joy/CardCover';
 import CardContent from '@mui/joy/CardContent';
+import ActiveBox from './ActiveBox';
 
 
 const MovieCards = ({movies}) => {
@@ -110,19 +110,7 @@ const MovieCards = ({movies}) => {
         {formatDuration(item.duration)}
       </Typography>
     </CardContent>
-    <Box
-      className="hoverBox"
-      height={'8px'}
-      width={'90px'}
-      bgcolor={'white'}
-      sx={{
-        display: 'none',
-        position: 'absolute',
-        bottom: -8,
-        left: '35%',
-        boxShadow: '0px 5px 10px 1px white'
-      }}
-    />
+   <ActiveBox />
   </Card>
     )
     }

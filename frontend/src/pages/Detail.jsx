@@ -15,30 +15,50 @@ import { useEffect } from 'react';
 import socket from '../socket';
 import MovieCards from '../componets/MovieCards';
 import SearchComponent from '../componets/SearchConponet';
+import ActiveBox from '../componets/ActiveBox';
+import Loader from '../componets/Loader';
+import { useNavigate ,useParams,useLocation} from 'react-router-dom';
+
 
 
 
 
 function Detail() {
-  const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie`);
+  const { category } = useParams()
+  const categoryMap = {
+    popular: '2',
+    recommended: '1',
+    featured: '3',
+  };
+  
+  const categoryParam = categoryMap[category] || '';
+  const url = `${baseURL}/api/movie?category=${categoryParam}`;
+  const { data,fetchData,loading,error } = useCRUD(url);
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState (data?.movies);
-
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    socket.on('onDataChange', fetchData)
     setMovies(data?.movies);
-  }, [data]);
+  }, [data, fetchData]);
 
   const filteredMovies = movies?.filter(movie =>
     movie.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleCatagory = (cat) => {
+    navigate(`/detail/${cat}`)
+  }
 
 
   const isXS = useMediaQuery('(max-width:600px)')
   return (
     <Box   sx={{ height: '100vh',backgroundColor: '#0E0E30', overflow:'auto' }}>
       <CssBaseline />
-      <Grid  container sx={{ height: '100%',backgroundColor: '#0E0E30' , }}>
+     {
+        loading ? <Loader/> : error ? <Typography variant='h4' color='error'>{error}</Typography> : ( <Grid  container sx={{ height: '100%',backgroundColor: '#0E0E30' , }}>
         <Grid
           item
           xs={12}
@@ -93,12 +113,32 @@ function Detail() {
             height={{xs:'90%',sm:'80%'}}
             >
               <Stack height={'3%'}    px={isXS?2:5}>
-              <Stack spacing={3} direction={'row'}  sx={!isXS?{borderBottom:'solid 2px #8282ad'}:{}}>
-              <Typography variant={'subtitle2'} sx={{color:'white'}}>Popular</Typography>
-                <Typography variant={'subtitle2'} sx={{color:'white'}}>Recommended</Typography>
-                <Typography variant={'subtitle2'} sx={{color:'white'}}>Featured</Typography>
-                <Typography variant={'subtitle2'} sx={{color:'white'}}>Watch Latter</Typography>
-
+              <Stack spacing={3} direction={'row'} position={'relative'}  sx={!isXS?{borderBottom:'solid 2px #8282ad'}:{}}>
+                <Box component={'div'} sx={{ position: 'relative',
+      '&:hover .hoverBox': {
+        display: 'block',
+        cursor:'pointer'
+      }}} onClick={()=>handleCatagory('popular')}>
+         <Typography variant={'subtitle1'} sx={{color:'white'}}>Popular</Typography>
+         <ActiveBox hight={'2px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/popular'}/>
+      </Box>
+      <Box component={'div'} sx={{ position: 'relative',
+        
+      '&:hover .hoverBox': {
+        display: 'block',
+        cursor:'pointer'
+      }}} onClick={()=>handleCatagory('recommended')}>
+         <Typography variant={'subtitle1'} sx={{color:'white'}}>Recommended</Typography>
+         <ActiveBox hight={'2px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/recommended'}/>
+      </Box>
+      <Box component={'div'} sx={{ position: 'relative',
+      '&:hover .hoverBox': {
+        display: 'block',
+        cursor:'pointer'
+      }}} onClick={()=>handleCatagory('featured')}>
+         <Typography variant={'subtitle1'} sx={{color:'white'}}>Featured</Typography>
+         <ActiveBox hight={'2px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/featured'}/>
+      </Box>
               </Stack>
               </Stack>
               <MovieCards movies={filteredMovies} />
@@ -120,7 +160,7 @@ function Detail() {
         >
           <SideNav/>
         </Grid>}
-      </Grid>
+      </Grid>)}
     </Box>
   );
 }

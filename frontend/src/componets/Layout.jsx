@@ -15,7 +15,7 @@ const location = useLocation();
     <CssBaseline />
     {!isXS && <LeftSideNav />}
     {!isXS || !location.pathname.includes('detail') && <BottomNav />}
-    <main style={{ marginLeft: isXS ? 0 : 150, px: 16 }}>
+    <main style={{ marginLeft: isXS ? 0 : 150, px: 16 ,backgroundColor: '#0E0E30'}}>
     <Routes>
           <Route path="/" element={<Home />} />
           <Route path="detail" element={<Detail />} />

@@ -18,10 +18,9 @@ const LeftSideNav = () => {
       variant="permanent"
       anchor="left"
     width={150}
-  
-
+    sx={{"& .MuiDrawer-paper": { borderWidth: 0 }}}
     >
-      <Stack bgcolor={   '#0E0E30'} spacing={{xs:0}} sx={{height:'100%',width:150 }}  >
+      <Stack bgcolor={ '#0E0E30'} spacing={{xs:0}} sx={{height:'100%',width:150 }}  >
     {
        !isXS &&  <Stack  sx={{height:'40%' ,justifyContent:'center',alignItems:'end' }}>
        {

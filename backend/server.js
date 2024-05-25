@@ -11,18 +11,19 @@ import typeCategory from "./routes/TypeAndCategory.js"
 
 dotenv.config()
 import { Server } from "socket.io"
+import path from "path"
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "https://t-movie-mu.vercel.app",
+    origin: "https://t-movie-a2k2ow3j5-amanuels-projects.vercel.app/",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "https://t-movie-mu.vercel.app",
+    origin: "https://t-movie-a2k2ow3j5-amanuels-projects.vercel.app/",
     credentials: true,
   })
 )
@@ -30,6 +31,8 @@ app.use(
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan("dev"))
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")))
 
 app.use("/api/auth", authRoutes)
 app.use(

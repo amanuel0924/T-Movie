@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "proxy": "",
+  "proxy": "https://t-movie-mu.vercel.app",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

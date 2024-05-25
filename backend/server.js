@@ -8,6 +8,7 @@ import authRoutes from "./routes/authRoutes.js"
 import channelRoutes from "./routes/channelRoutes.js"
 import movieRoutes from "./routes/movieRoute.js"
 import typeCategory from "./routes/TypeAndCategory.js"
+import path from "path"
 
 dotenv.config()
 import { Server } from "socket.io"

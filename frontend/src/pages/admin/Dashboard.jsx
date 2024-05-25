@@ -65,14 +65,13 @@ export default function Dashboard() {
            await axios.post(`${baseURL}/api/auth/logout`)
           dispatch(logout())
           navigate('/');
+            toast.success('logout successfully')
   }
   catch (error) {
     console.error(error);
       toast.error(error?.data?.message || error.message)
   }
   }
-  
-
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);

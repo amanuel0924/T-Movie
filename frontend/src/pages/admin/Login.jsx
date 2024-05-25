@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch,useSelector } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
 import { baseURL } from "../../socket";
+import { toast } from "react-toastify";
 
 
 
@@ -37,12 +38,13 @@ const handleSubmit = async (e) => {
         })
     });
 
-       console.log(response)
         dispatch(setCredentials({ ...response}))
+        toast.success('login successfully')
         navigate('/admin');
 }
 catch (error) {
     console.error(error);
+    toast.error(error?.data?.message || error.message)
 }
 }
 useEffect(() => {

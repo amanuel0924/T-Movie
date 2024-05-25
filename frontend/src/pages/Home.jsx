@@ -128,7 +128,6 @@ function Home() {
       </Stack>
     </Box>
     <Box 
-
       sx={{
        zIndex: 1,
         position: 'absolute',
@@ -150,7 +149,6 @@ function Home() {
         '::-webkit-scrollbar': { display: 'none' },
       }}
     >
-      
       {data.map((item) => (
         <Card   size="large"  key={item.title} sx={{  borderRadius:'3px',  backdropFilter: 'blur(3px)',backgroundColor: 'rgba(25, 26, 56, 0.9)',height:item.current ? '270px' :'230px' ,border:'solid 1px #0F102D',position:'relative'}}>
           <AspectRatio  ratio={1.5 } sx={{ minWidth: 180 }}>

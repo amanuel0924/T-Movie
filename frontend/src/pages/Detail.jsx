@@ -12,6 +12,10 @@ import { Avatar } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import useCRUD from '../services/channelServiec';
+import { baseURL } from '../socket';
+import { useEffect } from 'react';
+import socket from '../socket';
 
 const movies = [
   {
@@ -47,7 +51,18 @@ const movies = [
 ];
 
 
-function ResponsiveGrid() {
+function Detail() {
+
+  const [data,fetchData,loading,error] = useCRUD(`${baseURL}/api/channel`);
+
+
+
+  useEffect(() => {
+    fetchData();
+    console.log('fetching data')
+    socket.on('onDataChange',fetchData)
+  }, [fetchData]);
+
   const isXS = useMediaQuery('(max-width:600px)')
   return (
     <Box   sx={{ height: '100vh',backgroundColor: '#0E0E30', overflow:'auto' }}>
@@ -217,4 +232,4 @@ function ResponsiveGrid() {
   );
 }
 
-export default ResponsiveGrid;
+export default Detail

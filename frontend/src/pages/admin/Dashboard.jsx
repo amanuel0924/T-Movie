@@ -59,7 +59,7 @@ export default function Dashboard() {
   
     const dispatch = useDispatch();
     const handlelogout = async () => {
-    
+
       try {
             axios.defaults.withCredentials = true;
            await axios.post(`${baseURL}/api/auth/logout`)

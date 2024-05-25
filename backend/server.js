@@ -14,23 +14,36 @@ import { Server } from "socket.io"
 // const __dirname = path.resolve()
 const app = express()
 const server = http.createServer(app)
+const allowedOrigins = [
+  "https://frontend-delta-self-97.vercel.app",
+  "http://localhost:5173",
+]
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
+    }
+  },
+  credentials: true,
+}
+
+app.use(cors(corsOptions))
+
 const io = new Server(server, {
   cors: {
-    origin: "https://frontend-delta-self-97.vercel.app",
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true)
+      } else {
+        callback(new Error("Not allowed by CORS"))
+      }
+    },
     credentials: true,
   },
 })
-app.use(
-  cors({
-    origin: "https://frontend-delta-self-97.vercel.app",
-    credentials: true,
-  })
-)
 
-// app.use(express.static(path.join(__dirname, "/frontend/dist")))
-// app.get("*", (req, res) =>
-//   res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
-// )
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan("dev"))

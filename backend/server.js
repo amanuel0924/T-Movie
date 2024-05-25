@@ -16,13 +16,13 @@ const app = express()
 const server = http.createServer(app)
 const io = new Server(server, {
   cors: {
-    origin: "https://frontend-aw4kkfm68-amanuels-projects.vercel.app",
+    origin: "https://frontend-delta-self-97.vercel.app",
     credentials: true,
   },
 })
 app.use(
   cors({
-    origin: "https://frontend-aw4kkfm68-amanuels-projects.vercel.app",
+    origin: "https://frontend-delta-self-97.vercel.app",
     credentials: true,
   })
 )

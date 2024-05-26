@@ -1,6 +1,7 @@
 import axios from "axios"
 import { useState, useEffect, useCallback } from "react"
 import socket from "./../socket"
+import { toast } from "react-toastify"
 
 export const useCRUD = (baseUrl) => {
   const [data, setData] = useState([])
@@ -26,9 +27,11 @@ export const useCRUD = (baseUrl) => {
     try {
       const response = await axios.post(baseUrl, newData)
       socket.emit(`${event}`, response.data)
+      toast.success("Data created successfully")
       return response.data
     } catch (err) {
       setError(err)
+      toast.error(err?.data?.message || err?.message)
     } finally {
       setLoading(false)
     }
@@ -40,7 +43,9 @@ export const useCRUD = (baseUrl) => {
     try {
       await axios.patch(`${baseUrl}/${id}`)
       socket.emit(`${event}`, id)
+      toast.success("Data updated successfully")
     } catch (err) {
+      toast.error(err?.data?.message || err?.message)
       setError(err)
     } finally {
       setLoading(false)
@@ -52,10 +57,11 @@ export const useCRUD = (baseUrl) => {
     setError(null)
     try {
       await axios.put(`${baseUrl}/${id}`, updatedData)
-
       socket.emit(`${event}`, id)
+      toast.success("Data updated successfully")
     } catch (err) {
       setError(err)
+      toast.error(err?.data?.message || err?.message)
     } finally {
       setLoading(false)
     }
@@ -67,8 +73,11 @@ export const useCRUD = (baseUrl) => {
     try {
       await axios.delete(`${baseUrl}/${id}`)
       socket.emit(`${event}`)
+      toast.success("Data deleted successfully")
     } catch (err) {
+      toast.error(err?.data?.message || err?.message)
       setError(err)
+      return err
     } finally {
       setLoading(false)
     }

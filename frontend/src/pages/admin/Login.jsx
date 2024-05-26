@@ -23,6 +23,7 @@ const { user} = useSelector((state) => state.auth)
 
 
 
+
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -31,7 +32,7 @@ const handleSubmit = async (e) => {
         headers: {
             'Content-Type': 'application/json'
         },
-        credentials: 'include', // This is similar to axios.defaults.withCredentials = true
+        credentials: 'include', 
         body: JSON.stringify({
             email: email,
             password: password
@@ -55,9 +56,9 @@ useEffect(() => {
   return (
     <Stack height={'100vh'} width={'100%'}  direction={'row'}>
         <CssBaseline />
-        <Stack height={'100%'}  width={'50%'} bgcolor={'#000000'}>
+        <Stack height={'100%'}  width={'50%'} bgcolor={'#000000'} display={{ xs: 'none', md: 'block' }}>
             <Stack spacing={4} sx={{justifyContent:'center',alignItems:'center',height:'100%'}}>
-                <LeafIcon size={200} />
+                <LeafIcon size={180} />
                 <Typography variant={'h1'} sx={{color:'lightgray',fontWeight:'600'}}>T-Movie</Typography>
             </Stack>
 

@@ -10,14 +10,16 @@ import socket from "../../socket";
 import MyPieChart from "../../componets/Pichart";
 import ProgramLineChart from "../../componets/LIneChart";
 import { baseURL } from "../../socket";
+import Loader from "../../componets/Loader";
 
 const Overview = () => {
-  const { data:channel,fetchData:fechChannel } = useCRUD(`${baseURL}/api/channel`);
-  const { data:movie,fetchData:fechMovie } = useCRUD(`${baseURL}/api/movie`);
-  const { data:catagoreycount,fetchData:fechcat } = useCRUD(`${baseURL}/api/movie/grouped`);
-  const { data:typecount,fetchData:fechtype } = useCRUD(`${baseURL}/api/movie/type`);
+  const { data:channel,fetchData:fechChannel,loading:chloading } = useCRUD(`${baseURL}/api/channel`);
+  const { data:movie,fetchData:fechMovie,loading:moloading } = useCRUD(`${baseURL}/api/movie`);
+  const { data:catagoreycount,fetchData:fechcat,loading } = useCRUD(`${baseURL}/api/movie/grouped`);
+  const { data:typecount,fetchData:fechtype,loading:typeloading } = useCRUD(`${baseURL}/api/movie/type`);
   
- 
+ console.log(typecount)
+ console.log(catagoreycount)
 
   const refechaData = useCallback(() => {
     fechChannel();
@@ -40,7 +42,7 @@ const Overview = () => {
     </Box>
     <Stack justifyContent={'space-between'} spacing={2} direction="row" width={'100%'} >
      <Card elevation={5} sx={{ display: 'flex',minWidth: 270 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column' ,width:'100%',}}>
+     {chloading?<Loader/>:( <Box sx={{ display: 'flex', flexDirection: 'column' ,width:'100%',}}>
         <CardContent sx={{ display:'flex',flexDirection:'row',justifyContent:'space-between' }}>
           <Typography component="div" variant="h6" >
            Channel
@@ -55,10 +57,11 @@ const Overview = () => {
           12+ ths Month
           </Typography>
         </Box>
-      </Box>
+      </Box>)}
     </Card>
     <Card elevation={5} sx={{ display: 'flex',minWidth: 270 }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column' ,width:'100%',}}>
+      {
+        moloading?<Loader/>:(<Box sx={{ display: 'flex', flexDirection: 'column' ,width:'100%',}}>
         <CardContent sx={{ display:'flex',flexDirection:'row',justifyContent:'space-between' }}>
           <Typography component="div" variant="h6" >
            Program
@@ -73,7 +76,8 @@ const Overview = () => {
           12+ ths Month
           </Typography>
         </Box>
-      </Box>
+      </Box>)
+      }
     </Card>
     <Card elevation={5} sx={{ display: 'flex',minWidth: 270 }}>
       <Box sx={{ display: 'flex', flexDirection: 'column' ,width:'100%',}}>
@@ -96,12 +100,12 @@ const Overview = () => {
       </Stack>
 
       {
-        catagoreycount && <Stack>
+         loading?<Loader/>: <Stack>
         <MyPieChart data={catagoreycount }/>
       </Stack>
       }
  {
-      typecount &&  <Stack>
+      typeloading?<Loader/>:  <Stack>
       <ProgramLineChart data={typecount}/>
             </Stack>
      }

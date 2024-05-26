@@ -19,7 +19,7 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-const MyPieChart = ({data}) => {
+const MyPieChart = ({data=[]}) => {
     const typeMapping = {
         1: 'Recommended',
         2: 'Popular ',

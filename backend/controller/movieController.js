@@ -4,7 +4,7 @@ const prisma = new PrismaClient()
 
 export const getMovies = async (req, res) => {
   try {
-    const pageSize = 2
+    const pageSize = 5
     const page = Number(req.query.pageNumber) || 1
     const queryObj = {}
 

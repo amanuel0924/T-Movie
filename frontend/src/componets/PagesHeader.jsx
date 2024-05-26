@@ -28,7 +28,7 @@ const PagesHeader = (props) => {
 
   return (
     <Grid container  spacing={2} sx={{padding:2}}>
-    <Grid item xs={8}>
+    <Grid item xs={7}>
       <Box sx={{bgcolor:'#e0e0e0',display:'flex',alignItems:'center',padding:'0 10px',}} >
               <IconButton onClick={searchHandler} sx={{color:'#181A41'}} aria-label="search">
                 <SearchIcon />
@@ -47,14 +47,14 @@ const PagesHeader = (props) => {
           },width: '100%'}} id="outlined-basic" placeholder="Search" variant="outlined" size="small" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
       </Box>
     </Grid>
-    <Grid item xs={4}>
-    <Button  sx={{color:'#181A41'}} variant="text" startIcon={<IosShareIcon />}>
+    <Grid item xs={5}>
+    <Button size='small' sx={{color:'#181A41'}} variant="text" startIcon={<IosShareIcon />}>
     Export
   </Button>
-  <Button  sx={{color:'#181A41'}} variant="text" startIcon={<FilterListIcon />}>
+  <Button size='small' sx={{color:'#181A41'}} variant="text" startIcon={<FilterListIcon />}>
     Add Filter
   </Button>
-    <Button  onClick={()=>props.openModal()} sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}>{
+    <Button size='medium' onClick={()=>props.openModal()} sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}>{
       location.pathname.includes('channel')?'Add Channel':location.pathname.includes('program')?'Add Program':'Add Filter'
     }</Button>
     </Grid>

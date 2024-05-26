@@ -70,7 +70,6 @@ const Program = () => {
     } else {
       try {
         await createData({  title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'datachange')
-        toast.success("movie created succesfully")
         handleClose();
       } catch (error) {
         toast.error(error?.data?.message || error.message)
@@ -85,7 +84,6 @@ const Program = () => {
       try {
         await updateData(id, { title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'datachange')
         handleClose();
-        toast.success("movie updated succesfully")
       } catch (error) {
         toast.error(error?.data?.message || error.message)
       }
@@ -98,7 +96,6 @@ const Program = () => {
     try {
       await deleteData(deleteId,'datachange')
       handleClose();
-      toast.success("movie deleted succesfully")
     } catch (error) {
       toast.error(error?.data?.message || error.message)
     }
@@ -129,7 +126,7 @@ const Program = () => {
       >
         <Box sx={style}>
         <Typography id="modal-modal-title" sx={{textAlign:'center', fontWeight:'600'}} variant="h4" component="h4">
-            {deleteId?'are you sure Delete':id?'Edit':'Add'} Program
+            {deleteId?'Are you sure delete':id?'Edit':'Add'} Program
           </Typography>
         {!deleteId&&<Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
        <Stack spacing={2} direction='column' >

@@ -47,7 +47,6 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
         await createData({ name },'datachange')
         setname('');
         handleClose();
-        toast.success("channel created succesfully")
       } catch (error) {
         toast.error(error?.data?.message || error.message)
       }
@@ -63,7 +62,6 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
         setname('');
         setId('')
         handleClose();
-        toast.success("channel updated succesfully")
       } catch (error) {
         toast.error(error?.data?.message || error.message)
       }
@@ -71,18 +69,11 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
   };
 
 
-
-  
-
-
-
-
   const handleDelete = async () => { 
     try {
       await deleteData(deleteId,'datachange')
       setDeleteId('')
       handleClose();
-      toast.success("channel deleted succesfully")
     } catch (error) {
       toast.error(error?.data?.message || error.message)
     }
@@ -107,18 +98,22 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" sx={{textAlign:'center', fontWeight:'600'}} variant="h4" component="h4">
-            {deleteId?'are you sure Delete':id?'Edit':'Add'} Channel
+            {deleteId?'Are you sure delete':id?'Edit':'Add'} Channel
           </Typography>
        {!deleteId&&  <Box sx={{display:'flex' ,justifyContent:'center'}}>
         <TextField   sx={{marginTop:2, }}  label="Name" variant={'filled'} size={'small'} value={name}  onChange={(e) => setname(e.target.value)} />
         </Box>}
-        <Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
-        <Button onClick={handleClose}  variant={'outlined'}>Cancel</Button>
-       {!id&&!deleteId&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'} onClick={handleCreate}>{loading? <Loader/>:'Create'
-       }</Button>}
-       {id&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}  onClick={handleUpdate}>{loading? <Loader/>:'Update'}</Button>}
-       {deleteId&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}  onClick={handleDelete}>{loading? <Loader/>:'Delete'}</Button>}
-        </Box>
+       {
+        loading?<Loader/>:(
+          <Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
+          <Button onClick={handleClose}  variant={'outlined'}>Cancel</Button>
+         {!id&&!deleteId&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'} onClick={handleCreate}>Create
+         </Button>}
+         {id&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}  onClick={handleUpdate}>Update</Button>}
+         {deleteId&&<Button  sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}  onClick={handleDelete}>Delete</Button>}
+          </Box>
+        )
+       }
         </Box>
       </Modal>
    </Paper>)

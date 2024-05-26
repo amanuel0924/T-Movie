@@ -162,7 +162,7 @@ function Home() {
          {item.icon}
           </Box>
         </AspectRatio>
-        <Box  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1,cursor:'pointer' }} component={'div'} onClick={navigate('/detail')}>
+        <Box  color={'white'} sx={{ whiteSpace: 'nowrap', mx: 1,cursor:'pointer' }} component={'div'} onClick={()=>navigate('/detail')}>
           <Typography variant={'subtitle1'}  >{item.title}</Typography>
           <Typography variant='subtitle2'>{item.description}</Typography>
         </Box>

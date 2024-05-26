@@ -74,7 +74,7 @@ function Detail() {
         }}
       />
       <CardContent>
-      {loading ? <Loader/> : error ? <Typography variant='h4' color='error'>{'some thing wrong'}</Typography> : ( <Stack   height={'100%'} width={'100%'}>
+    <Stack   height={'100%'} width={'100%'}>
             <Stack
             direction={'column'}
             height={{xs:'20%',sm:'25%'}}
@@ -104,7 +104,7 @@ function Detail() {
         display: 'block',
       }}} onClick={()=>handleCatagory('popular')}>
          <Typography variant={'subtitle1'} sx={{color:'white'}}>Popular</Typography>
-         <ActiveBox hight={'3px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/popular'}/>
+         <ActiveBox hight={'4px'} width={'40px'} shadow={true} bottom={-7} left={'20%'} isActive={location.pathname === '/detail/popular'}/>
       </Box>
       <Box component={'div'} sx={{ position: 'relative',cursor:'pointer',
       '&:hover .hoverBox': {
@@ -124,12 +124,12 @@ function Detail() {
               </Stack>
               </Stack>
             </Stack>
-            <Stack
-            height={{xs:'85%',sm:'75%'}}
+            {loading ? <Loader/> : error ? <Typography variant='h4' color='error'>{'some thing wrong'}</Typography> : (    <Stack
+           pt={2} height={{xs:'85%',sm:'75%'}}
             >
               <MovieCards movies={filteredMovies} />
-            </Stack>
-          </Stack>)}
+            </Stack>)}
+          </Stack>
       </CardContent>
     </Card>  
     </Box>

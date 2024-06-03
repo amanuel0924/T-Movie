@@ -7,6 +7,7 @@ import { useDispatch,useSelector } from "react-redux";
 import { setCredentials } from "../../redux/authSlice";
 import { baseURL } from "../../socket";
 import { toast } from "react-toastify";
+import Loader from "../../componets/Loader";
 
 
 
@@ -18,15 +19,18 @@ const [password, setPassword] = useState('');
 const navigate = useNavigate();
 const dispatch = useDispatch();
 const { user} = useSelector((state) => state.auth)
-
+const [loading, setLoading] = useState(false)
 
 
 
 
 
 const handleSubmit = async (e) => {
+
+ 
     e.preventDefault();
     try {
+      setLoading(true)
       const response = await fetch(`${baseURL}/api/auth/login`, {
         method: 'POST',
         headers: {
@@ -44,8 +48,10 @@ const handleSubmit = async (e) => {
         navigate('/admin');
 }
 catch (error) {
-    console.error(error);
+  console.error(error);
     toast.error(error?.data?.message || error.message)
+}finally {
+  setLoading(false)
 }
 }
 useEffect(() => {
@@ -91,14 +97,16 @@ useEffect(() => {
                 id="password"
                 autoComplete="current-password"
               />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>
+              {
+                loading?<Loader/>:(<Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
+                >
+                  Sign In
+                </Button>)
+              }
               </Box>
 
             </Stack>

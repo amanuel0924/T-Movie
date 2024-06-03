@@ -82,7 +82,7 @@ function Detail() {
             >
             <Stack direction={'row'} justifyContent={'space-between'}>
             <Stack px={{xs:0,sm:5}} spacing={2} direction={'row'} alignItems={'center'} >
-             {isXS && <Box sx={{cursor:'pointer'}}  onclick={()=>navigate('/')} component={'div'}><ChevronIcon  size={35}  /></Box>}
+             {isXS && <Box sx={{cursor:'pointer'}}  onClick={()=>navigate('/')} component={'div'}><ChevronIcon  size={35}  /></Box>}
              <Box component={'div'} onClick={()=>navigate('/detail')} sx={{cursor:'pointer'}}>
              <Typography   variant={isXS?'h6':'h5'} sx={{color:'white'}}>Movies</Typography>
              </Box>

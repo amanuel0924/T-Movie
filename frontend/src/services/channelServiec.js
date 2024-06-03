@@ -75,7 +75,7 @@ export const useCRUD = (baseUrl) => {
       socket.emit(`${event}`)
       toast.success("Data deleted successfully")
     } catch (err) {
-      toast.error(err?.data?.message || err?.message)
+      toast.error("something wrong")
       setError(err)
       return err
     } finally {

@@ -18,9 +18,7 @@ const Overview = () => {
   const { data:catagoreycount,fetchData:fechcat,loading } = useCRUD(`${baseURL}/api/movie/grouped`);
   const { data:typecount,fetchData:fechtype,loading:typeloading } = useCRUD(`${baseURL}/api/movie/type`);
   
- console.log(typecount)
- console.log(catagoreycount)
-
+ 
   const refechaData = useCallback(() => {
     fechChannel();
     fechMovie();
@@ -105,7 +103,7 @@ const Overview = () => {
       </Stack>
       }
  {
-      typeloading?<Loader/>:  <Stack>
+      typeloading?<Loader/>:  <Stack mt={'40px'}>
       <ProgramLineChart data={typecount}/>
             </Stack>
      }

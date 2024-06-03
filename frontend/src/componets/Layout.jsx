@@ -19,7 +19,7 @@ const location = useLocation();
     <Routes>
           <Route path="/" element={<Home />} />
           <Route path="detail" element={<Detail />} />
-          <Route path="detail/:category" element={<Detail />} />
+          <Route path="detail/:category" element={<Detail />}/>
         </Routes>
     </main>
   </>

@@ -1,5 +1,5 @@
 import  { useState,useEffect,useCallback} from "react"
-import {  Box, Paper,Modal,Typography, TextField, Button, Stack } from "@mui/material"
+import {  Box, Paper,Modal,Typography, TextField, Button, Stack} from "@mui/material"
 import PagesHeader from "../../componets/PagesHeader"
 import {useCRUD} from './../../services/channelServiec'
 import InputLabel from '@mui/material/InputLabel';
@@ -40,6 +40,8 @@ const Program = () => {
   const [duration, setDuration] = useState('');
   const [description, setDescription] = useState('');
 
+ 
+  const[filterOpen,setFilterOpen]=useState(false)
 
 
   const handleClose = () => {
@@ -48,21 +50,28 @@ const Program = () => {
     setTitle('')
     setChannel('')
     setType('')
-    setCategory("")
+    setCategory('')
     setVideoUrl('')
     setDuration('')
     setDeleteId('')
     setDescription('')
   };
+  const handleFilterModalClose=()=>{
+    setFilterOpen(false)
+  }
+ 
   const handleOpen = () => setOpen(true);
+  const handleFilterOpen = () => setFilterOpen(true);
   
-  const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}`);
+  const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}&type=${type || ""}&category=${category || ""}&channel=${channel || ""}`);
   const { updateData,createData,deleteData} = useCRUD(`${baseURL}/api/movie`);
   const { data: types,fetchData:fechtype} = useCRUD(`${baseURL}/api/typeandcategory/types`);
   const { data: categorys,fetchData:fechCat} = useCRUD(`${baseURL}/api/typeandcategory/categories`);
   const { data: channels,fetchData:fechChannel} = useCRUD(`${baseURL}/api/channel`);
 
 
+
+  
 
   const handleCreate = async () => {
     if (!title || !channel || !type || !category || !videoUrl || !duration||!description) {
@@ -101,6 +110,14 @@ const Program = () => {
     }
   }
 
+
+  const cliearFilter=()=>{
+    setChannel('')
+    setCategory('')
+    setType('')
+    handleFilterModalClose()
+  }
+
   const fetchAll = useCallback(() => {
     fetchData();
     fechtype();
@@ -114,7 +131,7 @@ const Program = () => {
   return (
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px',}}>
-      <PagesHeader openModal={handleOpen} />
+      <PagesHeader openModal={handleOpen} openFilterModal={handleFilterOpen} />
       <ProgramTable  data={data.movies} openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
     <Paginate page={data.page} total={data.pages}  />  
     </Box>
@@ -207,6 +224,81 @@ const Program = () => {
         </Box>
         </Box>
       </Modal>
+{/* filter modal************************************************************** */}
+      <Modal
+       open={filterOpen}
+       onClose={handleFilterModalClose}
+       aria-labelledby="modal-modal-title"
+       aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+        <Stack>
+        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <InputLabel id="demo-select-small-label-chnnel-type">Type</InputLabel>
+      <Select
+        labelId="demo-select-small-label-type"
+        id="demo-select-small-chneel-type"
+        value={type}
+        label=" Type"
+        onChange={ (e) => setType(e.target.value)}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+       {
+          types?.map((type) => (
+            <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
+          ))
+       }
+        
+      </Select>
+    </FormControl>
+
+    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <InputLabel id="demo-select-small-label-chnnel">Channel</InputLabel>
+      <Select
+        labelId="demo-select-small-label"
+        id="demo-select-small-chneel"
+        value={channel}
+        label=" Channel"
+        onChange={ (e) => setChannel(e.target.value)}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+       {
+          channels?.map((channel) => (
+            <MenuItem key={channel.id} value={channel.id}>{channel.name}</MenuItem>
+          ))
+       }
+
+      </Select>
+    </FormControl>
+    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+      <InputLabel id="demo-select-small-label-chnnel-Category">Category</InputLabel>
+      <Select
+        labelId="demo-select-small-label-Category"
+        id="demo-select-small-chneel-Category"
+        value={category}
+        label=" Category"
+        onChange={ (e) => setCategory(e.target.value)}
+      >
+        <MenuItem value="">
+          <em>None</em>
+        </MenuItem>
+       {
+          categorys?.map((cat) => (
+            <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
+          ))
+       }
+        
+      </Select>
+    </FormControl>
+     <Button onClick={cliearFilter}>clear filter</Button>
+        </Stack>
+        </Box>
+      </Modal>
+
    </Paper>
   )
 }

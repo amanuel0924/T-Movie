@@ -12,7 +12,7 @@ export const useCRUD = (baseUrl) => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get(baseUrl)
+      const response = await axios.get(`${baseUrl}`)
       setData(response.data)
     } catch (err) {
       setError(err)

@@ -51,7 +51,7 @@ const PagesHeader = (props) => {
     <Button size='small' sx={{color:'#181A41'}} variant="text" startIcon={<IosShareIcon />}>
     Export
   </Button>
-  <Button onClick={()=>props.openFilterModal()} size='small' sx={{color:'#181A41'}} variant="text" startIcon={<FilterListIcon />}>
+  <Button size='small' sx={{color:'#181A41'}} variant="text" startIcon={<FilterListIcon />}>
     Add Filter
   </Button>
     <Button size='medium' onClick={()=>props.openModal()} sx={{color:'white',bgcolor:'#181A41'}} variant={'contained'}>{
@@ -63,7 +63,7 @@ const PagesHeader = (props) => {
 }
 PagesHeader.propTypes = {
     openModal: PropTypes.func,
-    openFilterModal: PropTypes.func
+    
   };
 
 

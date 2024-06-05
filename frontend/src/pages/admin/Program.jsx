@@ -9,10 +9,11 @@ import Select from '@mui/material/Select';
 import socket from "../../socket";
 import { toast } from "react-toastify";
 import Loader from '../../componets/Loader';
-import ProgramTable from "../../componets/programTable";
-import Paginate from "../../componets/Pagination";
-import { useParams } from "react-router-dom";
+// import ProgramTable from "../../componets/programTable";
+// import Paginate from "../../componets/Pagination";
+// import { useParams } from "react-router-dom";
 import { baseURL } from "../../socket";
+import ProTable from "../../componets/ProgramTable3";
 
 const style = {
   position: 'absolute',
@@ -28,7 +29,7 @@ const style = {
 };
 
 const Program = () => {
-  const { pageNumber, keyword } = useParams()
+  // const { pageNumber, keyword } = useParams()
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
   const [deleteId, setDeleteId] = useState('');
@@ -63,8 +64,8 @@ const Program = () => {
   const handleOpen = () => setOpen(true);
   const handleFilterOpen = () => setFilterOpen(true);
   
-  const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}&type=${type || ""}&category=${category || ""}&channel=${channel || ""}`);
-  const { updateData,createData,deleteData} = useCRUD(`${baseURL}/api/movie`);
+  // const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}&type=${type || ""}&category=${category || ""}&channel=${channel || ""}`);
+  const { updateData,createData,deleteData,loading} = useCRUD(`${baseURL}/api/movie`);
   const { data: types,fetchData:fechtype} = useCRUD(`${baseURL}/api/typeandcategory/types`);
   const { data: categorys,fetchData:fechCat} = useCRUD(`${baseURL}/api/typeandcategory/categories`);
   const { data: channels,fetchData:fechChannel} = useCRUD(`${baseURL}/api/channel`);
@@ -119,11 +120,11 @@ const Program = () => {
   }
 
   const fetchAll = useCallback(() => {
-    fetchData();
+    // fetchData();
     fechtype();
     fechCat();
     fechChannel();
-  }, [ fetchData,fechtype,fechCat,fechChannel]);
+  }, [fechtype,fechCat,fechChannel]);
 
   useEffect(() => {
     socket.on('onDataChange',fetchAll );
@@ -131,9 +132,9 @@ const Program = () => {
   return (
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px',}}>
-      <PagesHeader openModal={handleOpen} openFilterModal={handleFilterOpen} />
-      <ProgramTable  data={data.movies} openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
-    <Paginate page={data.page} total={data.pages}  />  
+      <PagesHeader openModal={handleOpen} />
+      <ProTable   openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
+    {/* <Paginate page={data.page} total={data.pages}  />   */}
     </Box>
     <Modal
         open={open}
@@ -224,80 +225,8 @@ const Program = () => {
         </Box>
         </Box>
       </Modal>
-{/* filter modal************************************************************** */}
-      <Modal
-       open={filterOpen}
-       onClose={handleFilterModalClose}
-       aria-labelledby="modal-modal-title"
-       aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-        <Stack>
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small-label-chnnel-type">Type</InputLabel>
-      <Select
-        labelId="demo-select-small-label-type"
-        id="demo-select-small-chneel-type"
-        value={type}
-        label=" Type"
-        onChange={ (e) => setType(e.target.value)}
-      >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-       {
-          types?.map((type) => (
-            <MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>
-          ))
-       }
-        
-      </Select>
-    </FormControl>
 
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small-label-chnnel">Channel</InputLabel>
-      <Select
-        labelId="demo-select-small-label"
-        id="demo-select-small-chneel"
-        value={channel}
-        label=" Channel"
-        onChange={ (e) => setChannel(e.target.value)}
-      >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-       {
-          channels?.map((channel) => (
-            <MenuItem key={channel.id} value={channel.id}>{channel.name}</MenuItem>
-          ))
-       }
-
-      </Select>
-    </FormControl>
-    <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-      <InputLabel id="demo-select-small-label-chnnel-Category">Category</InputLabel>
-      <Select
-        labelId="demo-select-small-label-Category"
-        id="demo-select-small-chneel-Category"
-        value={category}
-        label=" Category"
-        onChange={ (e) => setCategory(e.target.value)}
-      >
-        <MenuItem value="">
-          <em>None</em>
-        </MenuItem>
-       {
-          categorys?.map((cat) => (
-            <MenuItem key={cat.id} value={cat.id}>{cat.name}</MenuItem>
-          ))
-       }
-        
-      </Select>
-    </FormControl>
-     <Button onClick={cliearFilter}>clear filter</Button>
-        </Stack>
-        </Box>
-      </Modal>
+     
 
    </Paper>
   )

@@ -211,3 +211,73 @@ export const getTypeMovieCounts = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" })
   }
 }
+
+export const getAdminMovies = async (req, res) => {
+  try {
+    let { start, size, filters, globalFilter, sorting } = req.query
+
+    start = parseInt(start, 10) || 0
+    size = parseInt(size, 10) || 10
+    filters = JSON.parse(filters || "[]")
+    globalFilter = globalFilter || ""
+    sorting = JSON.parse(sorting || "[]")
+
+    console.log("Filters:", filters)
+
+    const where = {
+      OR: globalFilter
+        ? [
+            { title: { contains: globalFilter, mode: "insensitive" } },
+            { description: { contains: globalFilter, mode: "insensitive" } },
+          ]
+        : undefined,
+    }
+    filters.forEach((filter) => {
+      switch (filter.id) {
+        case "duration":
+          where[filter.id] = parseInt(filter.value, 10)
+          break
+        case "status":
+          where[filter.id] = filter.value === "true"
+          break
+        case "id":
+          console.log("ID:", filter.value)
+          where[filter.id] = parseInt(filter.value, 10)
+          break
+        default:
+          where[filter.id] = { contains: filter.value, mode: "insensitive" }
+      }
+    })
+
+    const orderBy = sorting.map((sort) => ({
+      [sort.id]: sort.desc ? "desc" : "asc",
+    }))
+
+    // Fetching data and count
+    const [data, totalRowCount] = await Promise.all([
+      prisma.movie.findMany({
+        where,
+        orderBy,
+        skip: start,
+        take: size,
+        include: {
+          channel: true,
+          type: true,
+          category: true,
+        },
+      }),
+      prisma.movie.count({ where }),
+    ])
+
+    // Sending the response
+    res.json({
+      data,
+      meta: {
+        totalRowCount,
+      },
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}

@@ -8,6 +8,7 @@ import {
   statusTogler,
   getCategoryMovieCounts,
   getTypeMovieCounts,
+  getAdminMovies,
 } from "./../controller/movieController.js"
 import { validate, movieSchema } from "../middleware/validationMiddleware.js"
 const router = express.Router()
@@ -15,6 +16,7 @@ const router = express.Router()
 router.route("/").get(getMovies).post(validate(movieSchema), createMovie)
 router.route("/grouped").get(getCategoryMovieCounts)
 router.route("/type").get(getTypeMovieCounts)
+router.route("/admin").get(getAdminMovies)
 router
   .route("/:id")
   .get(getMovieById)

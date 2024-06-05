@@ -228,7 +228,6 @@ export const getAdminMovies = async (req, res) => {
       where.OR = [
         { title: { contains: globalFilter, mode: "insensitive" } },
         { description: { contains: globalFilter, mode: "insensitive" } },
-        { id: { equals: Number(globalFilter) } },
       ]
     }
 

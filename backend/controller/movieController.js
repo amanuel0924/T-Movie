@@ -223,29 +223,89 @@ export const getAdminMovies = async (req, res) => {
     sorting = JSON.parse(sorting || "[]")
 
     console.log("Filters:", filters)
-
-    const where = {
-      OR: globalFilter
-        ? [
-            { title: { contains: globalFilter, mode: "insensitive" } },
-            { description: { contains: globalFilter, mode: "insensitive" } },
-          ]
-        : undefined,
+    const where = {}
+    if (globalFilter) {
+      where.OR = [
+        { title: { contains: globalFilter, mode: "insensitive" } },
+        { description: { contains: globalFilter, mode: "insensitive" } },
+        { id: { equals: Number(globalFilter) } },
+      ]
     }
+
+    //Handle individual filters
+    const supportedOperators = [
+      "equals",
+      "startsWith",
+      "endsWith",
+      "contains",
+      "lessThan",
+      "greaterThan",
+      "lessThanOrEqualTo",
+      "greaterThanOrEqualTo",
+      "between",
+      "fuzzy",
+    ]
+
     filters.forEach((filter) => {
-      switch (filter.id) {
-        case "duration":
-          where[filter.id] = parseInt(filter.value, 10)
+      const { id: column, value, mode: operator } = filter
+
+      const op = supportedOperators.includes(operator) ? operator : "contains"
+      let parsedValue
+      if (column === "status" && value === "true") {
+        parsedValue = true
+      } else if (column === "status" && value === "false") {
+        parsedValue = false
+      }
+
+      switch (op) {
+        case "equals":
+          where[column] =
+            column === "id" || column === "duration"
+              ? Number(value)
+              : { equals: value, mode: "insensitive" }
           break
-        case "status":
-          where[filter.id] = filter.value === "true"
+        case "startsWith":
+        case "endsWith":
+        case "contains":
+          if (column === "id") {
+            where[column] = Number(value)
+          } else if (column === "status") {
+            where[column] = parsedValue
+          } else {
+            where[column] = { [op]: value, mode: "insensitive" }
+          }
           break
-        case "id":
-          console.log("ID:", filter.value)
-          where[filter.id] = parseInt(filter.value, 10)
+        case "lessThan":
+          if (column === "duration") {
+            where[column] = { lt: Number(value) }
+          } else {
+            where[column] = { lt: Number(value) }
+          }
           break
+        case "greaterThan":
+          if (column === "duration") {
+            where[column] = { gt: Number(value) }
+          } else {
+            where[column] = { gt: Number(value) }
+          }
+          break
+        case "greaterThanOrEqualTo":
+          where[column] = { gte: Number(value) }
+          break
+        case "lessThanOrEqualTo":
+          where[column] = { lte: Number(value) }
+          break
+        case "between":
+          if (typeof value === "string") {
+            const [startValue, endValue] = value.split(",").map(Number)
+            if (!isNaN(startValue) && !isNaN(endValue)) {
+              where[column] = { gt: startValue, lt: endValue }
+            } else {
+              console.warn(`Invalid 'between' filter value: ${value}`)
+            }
+          }
         default:
-          where[filter.id] = { contains: filter.value, mode: "insensitive" }
+          console.warn(`Unsupported filter operator: ${op}`)
       }
     })
 
@@ -253,23 +313,16 @@ export const getAdminMovies = async (req, res) => {
       [sort.id]: sort.desc ? "desc" : "asc",
     }))
 
-    // Fetching data and count
     const [data, totalRowCount] = await Promise.all([
       prisma.movie.findMany({
         where,
         orderBy,
         skip: start,
         take: size,
-        include: {
-          channel: true,
-          type: true,
-          category: true,
-        },
       }),
       prisma.movie.count({ where }),
     ])
 
-    // Sending the response
     res.json({
       data,
       meta: {

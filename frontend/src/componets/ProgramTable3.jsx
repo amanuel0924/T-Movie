@@ -9,6 +9,7 @@ import { baseURL } from '../socket';
 import useCRUD from '../services/channelServiec';
 import { toast } from 'react-toastify';
 import socket from '../socket';
+import { formatDuration } from '../utils/utils';
 
 const ProTable = ({
   openModal,
@@ -33,6 +34,7 @@ const ProTable = ({
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
+  const [columnFilterFns,setColumnFilterFns]=useState([])
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 5,
@@ -73,13 +75,16 @@ const ProTable = ({
     url.searchParams.set('start', `${pagination.pageIndex * pagination.pageSize}`);
     url.searchParams.set('size', `${pagination.pageSize}`);
   
-    // Ensure filters are properly formatted
-    // const filtersWithMode = (columnFilters ?? []).map(filter => ({
-    //   ...filter,
-    //   mode: filter.filterMode || 'contains', 
-    // }));
-    console.log('Filters:', columnFilters);
-    url.searchParams.set('filters', JSON.stringify(columnFilters ?? []));
+     
+    const mergedArr = columnFilters.map(item => {
+      if (item.id in columnFilterFns) {
+        return { ...item, mode: columnFilterFns[item.id] };
+      }
+      return item;
+    });
+    
+    console.log(mergedArr);
+    url.searchParams.set('filters', JSON.stringify(mergedArr ?? []));
     url.searchParams.set('globalFilter', globalFilter ?? '');
     url.searchParams.set('sorting', JSON.stringify(sorting ?? []));
   
@@ -107,23 +112,31 @@ const ProTable = ({
       setIsLoading(false);
       setIsRefetching(false);
     }
-  }, [columnFilters, globalFilter, pagination.pageIndex, pagination.pageSize, sorting]);
+  }, [columnFilters, globalFilter, pagination.pageIndex, pagination.pageSize, sorting,columnFilterFns]);
 
   useEffect(() => {
     socket.on('onDataChange', fetchData);
+    console.log(columnFilterFns)
     fetchData();
     return () => {
       socket.off('onDataChange', fetchData);
     };
-  }, [fetchData]);
+  }, [fetchData,columnFilterFns]);
 
   const columns = useMemo(() => [
-    { accessorKey: 'id', header: '#id', size: 30 },
+    { accessorKey: 'id', header: '#id', size: 15,columnFilterModeOptions: ['fuzzy','between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],},
     { accessorKey: 'title', header: 'Title', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
-    { accessorKey: 'duration', header: 'Duration', size: 30, columnFilterModeOptions: ['between', 'lessThan', 'greaterThan'] },
-    { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith'] },
+    { accessorKey: 'duration',filterSelectOptions: [
+      { label: '1h', value: 1 * 60 * 60 * 1000} ,
+      { label: '2h', value: 2 * 60 * 60 * 1000 },
+      { label: '3h', value: 3 * 60 * 60 * 1000 },
+    ],
+    filterVariant: 'select' ,header: 'Duration', size: 30, columnFilterModeOptions: ['fuzzy', 'lessThan', 'greaterThan'], Cell: ({ row }) => formatDuration(row.original.duration)},
+    { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
     {
-      accessorKey: 'status', header: 'Status', size: 30,
+      accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'],
+      accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
+      filterVariant: 'checkbox',
       Cell: ({ row }) => (
         <Switch
           checked={Boolean(row.original.status)}
@@ -133,7 +146,7 @@ const ProTable = ({
       ),
     },
     {
-      id: 'actions', header: 'Actions', size: 30,
+      id: 'actions', header: 'Actions', size: 50,
       Cell: ({ row }) => (
         <div>
           <IconButton color="primary" onClick={() => handleUpdate(row.original)} aria-label="edit">
@@ -147,10 +160,13 @@ const ProTable = ({
     },
   ], [handleDelete, handleUpdate, updateStatusHandler]);
 
+  
+
   const table = useMaterialReactTable({
     columns,
     data,
-    enableRowSelection: true,
+    filterFns:columnFilterFns,
+    
     enableFacetedValues: true,
     enableColumnFilterModes: true,
     getRowId: (row) => row.id,
@@ -161,6 +177,7 @@ const ProTable = ({
     muiToolbarAlertBannerProps: isError ? { color: 'error', children: 'Error loading data' } : undefined,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
+    onColumnFilterFnsChange:setColumnFilterFns,
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
     rowCount,

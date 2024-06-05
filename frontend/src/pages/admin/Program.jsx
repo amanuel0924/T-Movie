@@ -42,7 +42,7 @@ const Program = () => {
   const [description, setDescription] = useState('');
 
  
-  const[filterOpen,setFilterOpen]=useState(false)
+  // const[filterOpen,setFilterOpen]=useState(false)
 
 
   const handleClose = () => {
@@ -57,12 +57,12 @@ const Program = () => {
     setDeleteId('')
     setDescription('')
   };
-  const handleFilterModalClose=()=>{
-    setFilterOpen(false)
-  }
+  // const handleFilterModalClose=()=>{
+  //   setFilterOpen(false)
+  // }
  
   const handleOpen = () => setOpen(true);
-  const handleFilterOpen = () => setFilterOpen(true);
+  // const handleFilterOpen = () => setFilterOpen(true);
   
   // const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}&type=${type || ""}&category=${category || ""}&channel=${channel || ""}`);
   const { updateData,createData,deleteData,loading} = useCRUD(`${baseURL}/api/movie`);
@@ -112,12 +112,12 @@ const Program = () => {
   }
 
 
-  const cliearFilter=()=>{
-    setChannel('')
-    setCategory('')
-    setType('')
-    handleFilterModalClose()
-  }
+  // const cliearFilter=()=>{
+  //   setChannel('')
+  //   setCategory('')
+  //   setType('')
+  //   handleFilterModalClose()
+  // }
 
   const fetchAll = useCallback(() => {
     // fetchData();

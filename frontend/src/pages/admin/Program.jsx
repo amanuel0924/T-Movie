@@ -14,6 +14,7 @@ import Loader from '../../componets/Loader';
 // import { useParams } from "react-router-dom";
 import { baseURL } from "../../socket";
 import ProTable from "../../componets/ProgramTable3";
+import Table from './../../componets/ProTable2'
 
 const style = {
   position: 'absolute',

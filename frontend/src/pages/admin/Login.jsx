@@ -27,7 +27,6 @@ const [loading, setLoading] = useState(false)
 
 const handleSubmit = async (e) => {
 
- 
     e.preventDefault();
     try {
       setLoading(true)
@@ -110,7 +109,7 @@ useEffect(() => {
               </Box>
 
             </Stack>
-            
+
         </Stack>
     </Stack>
   )

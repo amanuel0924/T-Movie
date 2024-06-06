@@ -123,15 +123,17 @@ const ProTable = ({
     };
   }, [fetchData,columnFilterFns]);
 
+
+
   const columns = useMemo(() => [
-    { accessorKey: 'id', header: '#id', size: 15,columnFilterModeOptions: ['fuzzy','between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],},
+    { accessorKey: 'id', header: '#id',filterVariant:'number' ,size: 15,columnFilterModeOptions: ['between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],  },
     { accessorKey: 'title', header: 'Title', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
     { accessorKey: 'duration',filterSelectOptions: [
       { label: '1h', value: 1 * 60 * 60 * 1000} ,
       { label: '2h', value: 2 * 60 * 60 * 1000 },
       { label: '3h', value: 3 * 60 * 60 * 1000 },
     ],
-    filterVariant: 'select' ,header: 'Duration', size: 30, columnFilterModeOptions: ['fuzzy', 'lessThan', 'greaterThan'] ,Cell: ({ row }) => formatDuration(row.original.duration) },
+    filterVariant: 'select' ,header: 'Duration', size: 30, columnFilterModeOptions: [ 'lessThan', 'greaterThan'] ,Cell: ({ row }) => formatDuration(row.original.duration) },
     { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
     {
       accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
@@ -168,7 +170,7 @@ const ProTable = ({
     enableFacetedValues: true,
     enableColumnFilterModes: true,
     getRowId: (row) => row.id,
-    initialState: { showColumnFilters: false },
+    initialState: { showColumnFilters: true, showGlobalFilter: true},
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,
@@ -187,6 +189,7 @@ const ProTable = ({
       showAlertBanner: isError,
       showProgressBars: isRefetching,
       sorting,
+      columnFilterFns
     },
   });
 

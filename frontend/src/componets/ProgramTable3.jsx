@@ -131,10 +131,10 @@ const ProTable = ({
       { label: '2h', value: 2 * 60 * 60 * 1000 },
       { label: '3h', value: 3 * 60 * 60 * 1000 },
     ],
-    filterVariant: 'select' ,header: 'Duration', size: 30, columnFilterModeOptions: ['fuzzy', 'lessThan', 'greaterThan'], Cell: ({ row }) => formatDuration(row.original.duration)},
+    filterVariant: 'select' ,header: 'Duration', size: 30, columnFilterModeOptions: ['fuzzy', 'lessThan', 'greaterThan'] ,Cell: ({ row }) => formatDuration(row.original.duration) },
     { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
     {
-      accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'],
+      accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
       accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
       filterVariant: 'checkbox',
       Cell: ({ row }) => (
@@ -165,12 +165,10 @@ const ProTable = ({
   const table = useMaterialReactTable({
     columns,
     data,
-    filterFns:columnFilterFns,
-    
     enableFacetedValues: true,
     enableColumnFilterModes: true,
     getRowId: (row) => row.id,
-    initialState: { showColumnFilters: true },
+    initialState: { showColumnFilters: false },
     manualFiltering: true,
     manualPagination: true,
     manualSorting: true,

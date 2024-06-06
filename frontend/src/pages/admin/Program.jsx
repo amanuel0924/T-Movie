@@ -9,11 +9,8 @@ import Select from '@mui/material/Select';
 import socket from "../../socket";
 import { toast } from "react-toastify";
 import Loader from '../../componets/Loader';
-// import ProgramTable from "../../componets/programTable";
-// import Paginate from "../../componets/Pagination";
-// import { useParams } from "react-router-dom";
 import { baseURL } from "../../socket";
-import ProTable from "../../componets/ProgramTable3";
+// import ProTable from "../../componets/ProgramTable3";
 import Table from './../../componets/ProTable2'
 
 const style = {
@@ -42,9 +39,6 @@ const Program = () => {
   const [duration, setDuration] = useState('');
   const [description, setDescription] = useState('');
 
- 
-  // const[filterOpen,setFilterOpen]=useState(false)
-
 
   const handleClose = () => {
     setOpen(false)
@@ -58,22 +52,15 @@ const Program = () => {
     setDeleteId('')
     setDescription('')
   };
-  // const handleFilterModalClose=()=>{
-  //   setFilterOpen(false)
-  // }
- 
+
   const handleOpen = () => setOpen(true);
-  // const handleFilterOpen = () => setFilterOpen(true);
   
-  // const { data,fetchData,loading } = useCRUD(`${baseURL}/api/movie?pageNumber=${pageNumber||1}&keyword=${keyword||''}&type=${type || ""}&category=${category || ""}&channel=${channel || ""}`);
   const { updateData,createData,deleteData,loading} = useCRUD(`${baseURL}/api/movie`);
   const { data: types,fetchData:fechtype} = useCRUD(`${baseURL}/api/typeandcategory/types`);
   const { data: categorys,fetchData:fechCat} = useCRUD(`${baseURL}/api/typeandcategory/categories`);
   const { data: channels,fetchData:fechChannel} = useCRUD(`${baseURL}/api/channel`);
 
 
-
-  
 
   const handleCreate = async () => {
     if (!title || !channel || !type || !category || !videoUrl || !duration||!description) {
@@ -113,13 +100,6 @@ const Program = () => {
   }
 
 
-  // const cliearFilter=()=>{
-  //   setChannel('')
-  //   setCategory('')
-  //   setType('')
-  //   handleFilterModalClose()
-  // }
-
   const fetchAll = useCallback(() => {
     // fetchData();
     fechtype();
@@ -134,8 +114,7 @@ const Program = () => {
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px',}}>
       <PagesHeader openModal={handleOpen} />
-      <ProTable   openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
-    {/* <Paginate page={data.page} total={data.pages}  />   */}
+      <Table   openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
     </Box>
     <Modal
         open={open}

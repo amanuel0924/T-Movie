@@ -19,60 +19,54 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
-import { formatDuration } from '../utils/utils';
+
 
 const Example = ({
-  openModal,
-  setId,
-  setDeleteId,
-  setTitle,
-  setDuration,
-  setDescription,
-  setCategory,
-  setType,
-  setVideoUrl,
-  setChannel,
-}) => {
+    openModal,
+    setName,
+    setId,
+    setDeleteId,
+  }) => {
   //manage our own state for stuff we want to pass to the API
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
   const [columnFilterFns,setColumnFilterFns]=useState({id:'equals'
-    ,title:'fuzzy',
-    description:'fuzzy',  
-    duration:'fuzzy',
+    ,name:'fuzzy',
     status:'equals',
   })
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
-  const { toglerStatus } = useCRUD(`${baseURL}/api/movie`);
+  const {toglerStatus}=useCRUD(`${baseURL}/api/channel`)
+  const handleDelete = useCallback(
+    (row) => {
+      openModal();
+      setDeleteId(row.id);
+    },
+    [openModal, setDeleteId]
+  );
 
-  const handleDelete = useCallback((row) => {
-    openModal();
-    setDeleteId(row.id);
-  }, [openModal, setDeleteId]);
+  const handleUpdate = useCallback(
+    (row) => {
+      openModal();
+      setName(row.name);
+      setId(row.id);
+    },
+    [openModal, setName, setId]
+  );
 
-  const handleUpdate = useCallback((row) => {
-    openModal();
-    setId(row.id);
-    setTitle(row.title);
-    setDuration(Number(row.duration));
-    setDescription(row.description);
-    setCategory(Number(row.categoryId));
-    setType(Number(row.typeId));
-    setVideoUrl(row.videoUrl);
-    setChannel(Number(row.channelId));
-  }, [openModal, setId, setTitle, setDuration, setDescription, setCategory, setType, setVideoUrl, setChannel]);
-
-  const updateStatusHandler = useCallback(async (id) => {
+  const updateStatusHandler = useCallback(
+    async(id, ) => {
     try {
-      await toglerStatus(id, 'datachange');
-    } catch (error) {
-      toast.error(error?.data?.message || error.message);
-    }
-  }, [toglerStatus]);
+      await toglerStatus(id,'datachange')
+      toast.success("chanel updated succesfully")
+     } catch (error) {
+       toast.error(error?.data?.message || error.message)
+     }
+   },
+   [toglerStatus]); 
   //consider storing this code in a custom hook (i.e useFetchUsers)
   const {
     data: { data = [], meta } = {}, //your data and api response will probably be different
@@ -91,8 +85,8 @@ const Example = ({
     ],
     queryFn: async () => {
       const fetchURL = new URL(
-        '/api/movie/admin',
-           `${baseURL}`,
+        '/api/channel/admin',
+           `${baseURL}` //use your own API URL,
       );
 
       //read our state and pass it to the API as query params
@@ -120,45 +114,46 @@ const Example = ({
     placeholderData: keepPreviousData, //don't go to 0 rows when refetching or paginating to next page
   });
 
-
-
-  const columns = useMemo(() => [
-    { accessorKey: 'id', header: '#id',filterVariant:'number' ,filterFn:'equal',size: 15,columnFilterModeOptions: ['between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],  },
-    { accessorKey: 'title', header: 'Title', size: 30 ,columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
-    { accessorKey: 'duration',size:15,filterSelectOptions: [
-     
-      { label: '1h', value: 1 * 60 * 60 * 1000} ,
-      { label: '2h', value: 2 * 60 * 60 * 1000 },
-      { label: '3h', value: 3 * 60 * 60 * 1000 },
-    ],
-    filterVariant: 'select' ,header: 'Duration', columnFilterModeOptions: [ 'fuzzy','lessThan', 'greaterThan'] ,Cell: ({ row }) => formatDuration(row.original.duration) },
-    { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
-    {
-      accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
-      accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
-      filterVariant: 'checkbox',
-      Cell: ({ row }) => (
-        <Switch
-          checked={Boolean(row.original.status)}
-          onChange={() => updateStatusHandler(row.original.id)}
-          inputProps={{ 'aria-label': 'controlled' }}
-        />
-      ),
-    },
-    {
-      id: 'actions', header: 'Actions', size: 50, enableColumnFilter:false,
-      Cell: ({ row }) => (
-        <div>
-          <IconButton color="primary" onClick={() => handleUpdate(row.original)} aria-label="edit">
-            <EditIcon />
-          </IconButton>
-          <IconButton color="secondary" onClick={() => handleDelete(row.original)} aria-label="delete">
+const columns = useMemo(
+    () => [
+        { accessorKey: 'id', header: '#id',filterVariant:'number' ,filterFn:'equal',size: 15,columnFilterModeOptions: ['between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],  },
+        { accessorKey: 'name', header: 'Name', size: 30 ,columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
+        {
+                  accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
+                  accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
+                  filterVariant: 'checkbox',
+                  Cell: ({ row }) => (
+                    <Switch
+                      checked={Boolean(row.original.status)}
+                      onChange={() => updateStatusHandler(row.original.id)}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  ),
+                },
+      {
+        id: 'actions', header: 'Actions', size: 50, enableColumnFilter:false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton
+              color="primary"
+              onClick={() => handleUpdate(row.original)}
+              aria-label="edit"
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              color="secondary"
+              onClick={() => handleDelete(row.original)}
+              aria-label="delete"
+            >
             <DeleteIcon />
-          </IconButton>
-        </div>
-      ),
-    },
-  ], [handleDelete, handleUpdate, updateStatusHandler]);
+            </IconButton>
+          </div>
+        ),
+      },
+    ],
+    [handleDelete, handleUpdate, updateStatusHandler]
+  );
 
 
   const table = useMaterialReactTable({
@@ -208,21 +203,15 @@ const queryClient = new QueryClient();
 
 
 
-const ExampleWithReactQueryProvider = ({
+const ChannelProTable = ({
   openModal,
+  setName,
   setId,
   setDeleteId,
-  setTitle,
-  setDuration,
-  setDescription,
-  setCategory,
-  setType,
-  setVideoUrl,
-  setChannel,
 }) => (
   <QueryClientProvider client={queryClient}>
-    <Example openModal={openModal} setId={setId} setDeleteId={setDeleteId} setTitle={setTitle} setDuration={setDuration} setDescription={setDescription} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setChannel={setChannel} />
+    <Example openModal={openModal} setName={setName} setId={setId} setDeleteId={setDeleteId} />
   </QueryClientProvider>
 );
 
-export default ExampleWithReactQueryProvider;
+export default ChannelProTable;

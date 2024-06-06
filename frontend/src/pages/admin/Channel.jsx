@@ -1,10 +1,10 @@
-import  { useState,useEffect} from "react"
+import  { useState} from "react"
 import {  Box, Paper,Modal,Typography, TextField, Button  } from "@mui/material"
 import PagesHeader from "../../componets/PagesHeader"
 import { baseURL } from "../../socket";
 import Loader from '../../componets/Loader';
-import ChannelTable from "../../componets/ChannelTable";
-import socket from '../../socket';
+// import ChannelTable from "../../componets/ChannelTable";
+import ChanelProTable from "../../componets/ChannelTablePro";
 import { toast } from "react-toastify";
 import {useCRUD} from './../../services/channelServiec'
 import { useParams } from "react-router-dom";
@@ -38,7 +38,7 @@ const Channel = () => {
   }
 
 const API_URL = `${baseURL}/api/channel${keyword?`?keyword=${keyword}`:''}`
-const { data: channel,fetchData,createData,loading,updateData,deleteData } = useCRUD(API_URL);
+const { createData,loading,updateData,deleteData } = useCRUD(API_URL);
   const handleCreate = async () => {
     if (!name) {
       toast.error("please fill all input")
@@ -79,16 +79,14 @@ const { data: channel,fetchData,createData,loading,updateData,deleteData } = use
     }
   }
 
-  useEffect(() => {
-    fetchData();
-    socket.on('onDataChange',fetchData)
-  }, [fetchData]);
+ 
   return (
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px'}}>
       <PagesHeader openModal={handleOpen}  />
-   
-<ChannelTable data={channel} openModal={handleOpen} setName={setname} setId={setId} setDeleteId={setDeleteId}   />
+
+
+<ChanelProTable  openModal={handleOpen} setName={setname} setId={setId} setDeleteId={setDeleteId}   />
     </Box>
     <Modal
         open={open}

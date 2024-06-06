@@ -258,18 +258,20 @@ export const getAdminMovies = async (req, res) => {
 
       switch (op) {
         case "equals":
-          where[column] =
-            column === "id" || column === "duration"
-              ? Number(value)
-              : { equals: value, mode: "insensitive" }
+          if (column === "status") {
+            where[column] = parsedValue
+          } else {
+            where[column] =
+              column === "id" || column === "duration"
+                ? Number(value)
+                : { equals: value, mode: "insensitive" }
+          }
           break
         case "startsWith":
         case "endsWith":
         case "contains":
           if (column === "id") {
             where[column] = Number(value)
-          } else if (column === "status") {
-            where[column] = parsedValue
           } else {
             where[column] = { [op]: value, mode: "insensitive" }
           }
@@ -295,14 +297,8 @@ export const getAdminMovies = async (req, res) => {
           where[column] = { lte: Number(value) }
           break
         case "between":
-          if (typeof value === "string") {
-            const [startValue, endValue] = value.split(",").map(Number)
-            if (!isNaN(startValue) && !isNaN(endValue)) {
-              where[column] = { gt: startValue, lt: endValue }
-            } else {
-              console.warn(`Invalid 'between' filter value: ${value}`)
-            }
-          }
+          const [startValue, endValue] = value.map(Number)
+          where[column] = { gt: startValue || 0, lt: endValue || 999999 }
         default:
           console.warn(`Unsupported filter operator: ${op}`)
       }

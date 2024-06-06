@@ -6,11 +6,13 @@ import {
   createChannel,
   deleteChannel,
   statusTogler,
+  getAdminChannel,
 } from "./../controller/channelController.js"
 
 const router = express.Router()
 
 router.route("/").get(getChannels).post(createChannel)
+router.route("/admin").get(getAdminChannel)
 router
   .route("/:id")
   .get(getChannelById)

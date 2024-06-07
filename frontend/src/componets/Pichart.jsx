@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
-
-import { PieChart, Pie, Cell, Tooltip,Legend } from 'recharts';
+import { Box, Typography } from '@mui/material'
+import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 
 
  
@@ -33,7 +33,8 @@ const MyPieChart = ({data=[]}) => {
         value: item._count.id
     }));
 
-    return ( <PieChart width={600} height={400}>
+    return (<Box sx={{display:'flex', justifyContent:'center ', alignContent:"center" }}>
+       <PieChart width={600} height={400}>
         <Pie
           data={transformedData}
           cx={200}
@@ -48,9 +49,28 @@ const MyPieChart = ({data=[]}) => {
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Pie>
-        <Legend  iconSize={50} width={200} height={200} layout='centric' verticalAlign='middle' align="right"  />
+        
         <Tooltip content={<CustomTooltip />} />
-      </PieChart>)
+      </PieChart>
+      <Box sx={{display:'flex',flexDirection:'column',alignContent:'center' ,justifyContent:'center'} }>
+        <Typography>Category Distribution</Typography>
+        <ul>
+  {transformedData.map(item => (
+    <li key={item.name} style={{ display: 'flex', alignItems: 'center', marginBottom: '5px' }}>
+      <div
+        style={{
+          width: '20px',
+          height: '20px',
+          backgroundColor: COLORS[transformedData.indexOf(item) % COLORS.length],
+          marginRight: '10px',
+        }}
+      />
+     {item.value}: {item.name} 
+    </li>
+  ))}
+</ul>
+      </Box>
+    </Box>)
 }
 ;
 

@@ -20,7 +20,11 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
 
-
+const clomunVariants={
+  id:'number',
+  name:'text',
+  status:'checkbox'
+}
 const Example = ({
     openModal,
     setName,
@@ -88,20 +92,26 @@ const Example = ({
         '/api/channel/admin',
            `${baseURL}` //use your own API URL,
       );
-
-      //read our state and pass it to the API as query params
-      fetchURL.searchParams.set(
-        'start',
-        `${pagination.pageIndex * pagination.pageSize}`,
-      );
-      fetchURL.searchParams.set('size', `${pagination.pageSize}`);
-      const mergedArr = columnFilters.map(item => {
+      let mergedArr = columnFilters.map(item => {
         if (item.id in columnFilterFns) {
           return { ...item, mode: columnFilterFns[item.id] };
         }
         return item;
       });
 
+      mergedArr = mergedArr.map(item => {
+        if (item.id in clomunVariants) {
+          return { ...item, variant: clomunVariants[item.id] };
+        }
+        return item;
+      }
+      );
+
+      fetchURL.searchParams.set(
+        'start',
+        `${pagination.pageIndex * pagination.pageSize}`,
+      );
+      fetchURL.searchParams.set('size', `${pagination.pageSize}`);
       fetchURL.searchParams.set('filters', JSON.stringify(mergedArr ?? []));
       fetchURL.searchParams.set('globalFilter', globalFilter ?? '');
       fetchURL.searchParams.set('sorting', JSON.stringify(sorting ?? []));

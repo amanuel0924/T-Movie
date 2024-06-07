@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client"
+import { getAdminData } from "./refactoredController.js"
 const prisma = new PrismaClient()
 
 export const getChannels = async (req, res) => {
@@ -125,105 +126,106 @@ export const statusTogler = async (req, res) => {
   }
 }
 
-export const getAdminChannel = async (req, res) => {
-  try {
-    let { start, size, filters, globalFilter, sorting } = req.query
+export const getAdminChannel = getAdminData(prisma.channel)
+//  async (req, res) => {
+//   try {
+//     let { start, size, filters, globalFilter, sorting } = req.query
 
-    start = parseInt(start, 10) || 0
-    size = parseInt(size, 10) || 10
-    filters = JSON.parse(filters || "[]")
-    globalFilter = globalFilter || ""
-    sorting = JSON.parse(sorting || "[]")
+//     start = parseInt(start, 10) || 0
+//     size = parseInt(size, 10) || 10
+//     filters = JSON.parse(filters || "[]")
+//     globalFilter = globalFilter || ""
+//     sorting = JSON.parse(sorting || "[]")
 
-    console.log("Filters:", filters)
-    const where = {}
-    if (globalFilter) {
-      where.OR = [{ name: { contains: globalFilter, mode: "insensitive" } }]
-    }
+//     console.log("Filters:", filters)
+//     const where = {}
+//     if (globalFilter) {
+//       where.OR = [{ name: { contains: globalFilter, mode: "insensitive" } }]
+//     }
 
-    //Handle individual filters
-    const supportedOperators = [
-      "equals",
-      "startsWith",
-      "endsWith",
-      "contains",
-      "lessThan",
-      "greaterThan",
-      "lessThanOrEqualTo",
-      "greaterThanOrEqualTo",
-      "between",
-      "fuzzy",
-    ]
+//     //Handle individual filters
+//     const supportedOperators = [
+//       "equals",
+//       "startsWith",
+//       "endsWith",
+//       "contains",
+//       "lessThan",
+//       "greaterThan",
+//       "lessThanOrEqualTo",
+//       "greaterThanOrEqualTo",
+//       "between",
+//       "fuzzy",
+//     ]
 
-    filters.forEach((filter) => {
-      const { id: column, value, mode: operator } = filter
+//     filters.forEach((filter) => {
+//       const { id: column, value, mode: operator } = filter
 
-      const op = supportedOperators.includes(operator) ? operator : "contains"
-      let parsedValue
-      if (column === "status" && value === "true") {
-        parsedValue = true
-      } else if (column === "status" && value === "false") {
-        parsedValue = false
-      }
+//       const op = supportedOperators.includes(operator) ? operator : "contains"
+//       let parsedValue
+//       if (column === "status" && value === "true") {
+//         parsedValue = true
+//       } else if (column === "status" && value === "false") {
+//         parsedValue = false
+//       }
 
-      switch (op) {
-        case "equals":
-          if (column === "status") {
-            where[column] = parsedValue
-          } else {
-            where[column] =
-              column === "id" || column === "duration"
-                ? Number(value)
-                : { equals: value, mode: "insensitive" }
-          }
-          break
-        case "startsWith":
-        case "endsWith":
-        case "contains":
-          where[column] = { [op]: value, mode: "insensitive" }
-          break
-        case "lessThan":
-          where[column] = { lt: Number(value) }
-          break
-        case "greaterThan":
-          where[column] = { gt: Number(value) }
-          break
-        case "greaterThanOrEqualTo":
-          where[column] = { gte: Number(value) }
-          break
-        case "lessThanOrEqualTo":
-          where[column] = { lte: Number(value) }
-          break
-        case "between":
-          const [startValue, endValue] = value.map(Number)
-          where[column] = { gt: startValue || 0, lt: endValue || 999999 }
-        default:
-          console.warn(`Unsupported filter operator: ${op}`)
-      }
-    })
+//       switch (op) {
+//         case "equals":
+//           if (column === "status") {
+//             where[column] = parsedValue
+//           } else {
+//             where[column] =
+//               column === "id" || column === "duration"
+//                 ? Number(value)
+//                 : { equals: value, mode: "insensitive" }
+//           }
+//           break
+//         case "startsWith":
+//         case "endsWith":
+//         case "contains":
+//           where[column] = { [op]: value, mode: "insensitive" }
+//           break
+//         case "lessThan":
+//           where[column] = { lt: Number(value) }
+//           break
+//         case "greaterThan":
+//           where[column] = { gt: Number(value) }
+//           break
+//         case "greaterThanOrEqualTo":
+//           where[column] = { gte: Number(value) }
+//           break
+//         case "lessThanOrEqualTo":
+//           where[column] = { lte: Number(value) }
+//           break
+//         case "between":
+//           const [startValue, endValue] = value.map(Number)
+//           where[column] = { gt: startValue || 0, lt: endValue || 999999 }
+//         default:
+//           console.warn(`Unsupported filter operator: ${op}`)
+//       }
+//     })
 
-    const orderBy = sorting.map((sort) => ({
-      [sort.id]: sort.desc ? "desc" : "asc",
-    }))
+//     const orderBy = sorting.map((sort) => ({
+//       [sort.id]: sort.desc ? "desc" : "asc",
+//     }))
 
-    const [data, totalRowCount] = await Promise.all([
-      prisma.channel.findMany({
-        where,
-        orderBy,
-        skip: start,
-        take: size,
-      }),
-      prisma.channel.count({ where }),
-    ])
+//     const [data, totalRowCount] = await Promise.all([
+//       prisma.channel.findMany({
+//         where,
+//         orderBy,
+//         skip: start,
+//         take: size,
+//       }),
+//       prisma.channel.count({ where }),
+//     ])
 
-    res.json({
-      data,
-      meta: {
-        totalRowCount,
-      },
-    })
-  } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: "Something went wrong" })
-  }
-}
+//     res.json({
+//       data,
+//       meta: {
+//         totalRowCount,
+//       },
+//     })
+//   } catch (error) {
+//     console.error(error)
+//     res.status(500).json({ error: "Something went wrong" })
+//   }
+// }

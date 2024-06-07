@@ -39,10 +39,26 @@ const Example = ({
   const [sorting, setSorting] = useState([]);
   const [columnFilterFns,setColumnFilterFns]=useState({id:'equals'
     ,title:'fuzzy',
-    description:'fuzzy',  
+    description:'fuzzy',
     duration:'fuzzy',
     status:'equals',
   })
+  const clomunVariants={
+    id:'number',
+    title:'text',
+    description:'text',
+    duration:'number',
+    status:'checkbox'
+  }
+  const characterOperators = [
+    "equals",
+    "startsWith",
+    "endsWith",
+    "contains",
+    "notEquals",
+    "fuzzy",
+  ]
+  
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -94,20 +110,26 @@ const Example = ({
         '/api/movie/admin',
            `${baseURL}`,
       );
-
-      //read our state and pass it to the API as query params
-      fetchURL.searchParams.set(
-        'start',
-        `${pagination.pageIndex * pagination.pageSize}`,
-      );
-      fetchURL.searchParams.set('size', `${pagination.pageSize}`);
-      const mergedArr = columnFilters.map(item => {
+      let mergedArr = columnFilters.map(item => {
         if (item.id in columnFilterFns) {
           return { ...item, mode: columnFilterFns[item.id] };
         }
         return item;
       });
 
+       //now we  merege the merged array with the columnvariants
+      mergedArr = mergedArr.map(item => {
+        if (item.id in clomunVariants) {
+          return { ...item, variant: clomunVariants[item.id] };
+        }
+        return item;
+      }
+      );
+      fetchURL.searchParams.set(
+        'start',
+        `${pagination.pageIndex * pagination.pageSize}`,
+      );
+      fetchURL.searchParams.set('size', `${pagination.pageSize}`);
       fetchURL.searchParams.set('filters', JSON.stringify(mergedArr ?? []));
       fetchURL.searchParams.set('globalFilter', globalFilter ?? '');
       fetchURL.searchParams.set('sorting', JSON.stringify(sorting ?? []));
@@ -120,11 +142,20 @@ const Example = ({
     placeholderData: keepPreviousData, //don't go to 0 rows when refetching or paginating to next page
   });
 
-
+  const numberAndDateOperators = [
+    "equals",
+    "lessThan",
+    "greaterThan",
+    "lessThanOrEqualTo",
+    "greaterThanOrEqualTo",
+    "between",
+    "notEquals",
+    "betweenInclusive",
+  ]
 
   const columns = useMemo(() => [
-    { accessorKey: 'id', header: '#id',filterVariant:'number' ,filterFn:'equal',size: 15,columnFilterModeOptions: ['between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],  },
-    { accessorKey: 'title', header: 'Title', size: 30 ,columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
+    { accessorKey: 'id', header: '#id',filterVariant:'number' ,filterFn:'equal',size: 15, columnFilterModeOptions:numberAndDateOperators  },
+    { accessorKey: 'title', header: 'Title', size: 30 ,columnFilterModeOptions: characterOperators },
     { accessorKey: 'duration',size:15,filterSelectOptions: [
      
       { label: '1h', value: 1 * 60 * 60 * 1000} ,
@@ -132,7 +163,7 @@ const Example = ({
       { label: '3h', value: 3 * 60 * 60 * 1000 },
     ],
     filterVariant: 'select' ,header: 'Duration', columnFilterModeOptions: [ 'fuzzy','lessThan', 'greaterThan'] ,Cell: ({ row }) => formatDuration(row.original.duration) },
-    { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
+    { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions:characterOperators },
     {
       accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
       accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
@@ -196,6 +227,7 @@ const Example = ({
   useEffect(() => {
     socket.on('onDataChange', refetch);
     refetch
+    console.log(columnFilterFns,columnFilters)
     return () => {
       socket.off('onDataChange', refetch);
     };

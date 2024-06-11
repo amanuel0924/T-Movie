@@ -154,7 +154,11 @@ const Example = ({
           inputProps={{ 'aria-label': 'controlled' }}
         />
       ),
-    },{accessorKey:'typeId',header:'typeId',filterVariant:'multi-select',  filterSelectOptions: [1,2,3,4,],columnFilterModeOptions:multiSelectModes, size: 30,}
+    },{accessorKey:'typeId',header:'Type',filterVariant:'multi-select',  filterSelectOptions: [ 
+      { label: 'Live TV', value: 1},
+      { label: 'Movies', value: 2},
+      { label: 'TV Shows', value: 3 },
+      { label: 'Sports', value: 2},],columnFilterModeOptions:multiSelectModes, size: 30,}
     ,{
       accessorKey: 'released',
       columnFilterModeOptions:numberDateTimeModes,

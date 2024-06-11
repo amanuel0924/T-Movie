@@ -19,8 +19,9 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
-import { formatDuration } from '../utils/utils';
-
+import { formatDuration, mergeFilterDatatype, mergeFilterfn, mergeFiterVariant,checkboxModes,numberDateTimeModes,selectModes,multiSelectModes } from '../utils/utils';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 const Example = ({
   openModal,
   setId,
@@ -32,33 +33,33 @@ const Example = ({
   setType,
   setVideoUrl,
   setChannel,
+  setReleased,
 }) => {
-  //manage our own state for stuff we want to pass to the API
+  
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
-  const [columnFilterFns,setColumnFilterFns]=useState({id:'equals'
-    ,title:'fuzzy',
+
+  const [columnFilterFns,setColumnFilterFns]=useState({
+    id:'equals',
+    title:'fuzzy',
     description:'fuzzy',
-    duration:'fuzzy',
+    duration:'lessThan',
     status:'equals',
+    released:'equals',
+    typeId:'equals'
   })
-  const clomunVariants={
-    id:'number',
-    title:'text',
-    description:'text',
-    duration:'number',
-    status:'checkbox'
-  }
-  const characterOperators = [
-    "equals",
-    "startsWith",
-    "endsWith",
-    "contains",
-    "notEquals",
-    "fuzzy",
-  ]
-  
+  const columnDataTypes = {
+    id: 'number',
+    title: 'string',
+    description: 'string',
+    duration: 'number',
+    status: 'boolean',
+    released: 'date',
+    typeId:'array'
+  };
+  const customeGlobalFilter=JSON.stringify({columuns:['title','description'],value:globalFilter})
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -80,7 +81,8 @@ const Example = ({
     setType(Number(row.typeId));
     setVideoUrl(row.videoUrl);
     setChannel(Number(row.channelId));
-  }, [openModal, setId, setTitle, setDuration, setDescription, setCategory, setType, setVideoUrl, setChannel]);
+    setReleased(row.released);
+  }, [openModal, setId, setTitle, setDuration, setDescription, setCategory, setType, setVideoUrl, setChannel,setReleased]);
 
   const updateStatusHandler = useCallback(async (id) => {
     try {
@@ -89,7 +91,7 @@ const Example = ({
       toast.error(error?.data?.message || error.message);
     }
   }, [toglerStatus]);
-  //consider storing this code in a custom hook (i.e useFetchUsers)
+ 
   const {
     data: { data = [], meta } = {}, //your data and api response will probably be different
     isError,
@@ -110,31 +112,19 @@ const Example = ({
         '/api/movie/admin',
            `${baseURL}`,
       );
-      let mergedArr = columnFilters.map(item => {
-        if (item.id in columnFilterFns) {
-          return { ...item, mode: columnFilterFns[item.id] };
-        }
-        return item;
-      });
 
-       //now we  merege the merged array with the columnvariants
-      mergedArr = mergedArr.map(item => {
-        if (item.id in clomunVariants) {
-          return { ...item, variant: clomunVariants[item.id] };
-        }
-        return item;
-      }
-      );
+      //merege the merged array with thecolumnFilterFns 
+      let mergedArr = mergeFilterfn(columnFilters,columnFilterFns)
+      //merege the merged array with the columnDatatype
+      mergedArr = mergeFilterDatatype (mergedArr,columnDataTypes)
       fetchURL.searchParams.set(
         'start',
         `${pagination.pageIndex * pagination.pageSize}`,
       );
       fetchURL.searchParams.set('size', `${pagination.pageSize}`);
       fetchURL.searchParams.set('filters', JSON.stringify(mergedArr ?? []));
-      fetchURL.searchParams.set('globalFilter', globalFilter ?? '');
+      fetchURL.searchParams.set('globalFilter', customeGlobalFilter ?? '');
       fetchURL.searchParams.set('sorting', JSON.stringify(sorting ?? []));
-
-      //use whatever fetch library you want, fetch, axios, etc
       const response = await fetch(fetchURL.href);
       const json = await response.json();
       return json;
@@ -142,30 +132,19 @@ const Example = ({
     placeholderData: keepPreviousData, //don't go to 0 rows when refetching or paginating to next page
   });
 
-  const numberAndDateOperators = [
-    "equals",
-    "lessThan",
-    "greaterThan",
-    "lessThanOrEqualTo",
-    "greaterThanOrEqualTo",
-    "between",
-    "notEquals",
-    "betweenInclusive",
-  ]
-
   const columns = useMemo(() => [
-    { accessorKey: 'id', header: '#id',filterVariant:'number' ,filterFn:'equal',size: 15, columnFilterModeOptions:numberAndDateOperators  },
-    { accessorKey: 'title', header: 'Title', size: 30 ,columnFilterModeOptions: characterOperators },
+    { accessorKey: 'id', header: 'id' ,size: 15, columnFilterModeOptions:numberDateTimeModes,   },
+    { accessorKey: 'title', header: 'Title', size: 30  },
     { accessorKey: 'duration',size:15,filterSelectOptions: [
-     
       { label: '1h', value: 1 * 60 * 60 * 1000} ,
       { label: '2h', value: 2 * 60 * 60 * 1000 },
       { label: '3h', value: 3 * 60 * 60 * 1000 },
     ],
-    filterVariant: 'select' ,header: 'Duration', columnFilterModeOptions: [ 'fuzzy','lessThan', 'greaterThan'] ,Cell: ({ row }) => formatDuration(row.original.duration) },
-    { accessorKey: 'description', header: 'Description', size: 30, columnFilterModeOptions:characterOperators },
-    {
-      accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
+    columnFilterModeOptions:selectModes,
+    filterVariant: 'select' ,header: 'Duration',Cell: ({ row }) => formatDuration(row.original.duration) },
+    { accessorKey: 'description', header: 'Description', size: 30,},
+    { 
+      accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: checkboxModes,
       accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
       filterVariant: 'checkbox',
       Cell: ({ row }) => (
@@ -175,7 +154,11 @@ const Example = ({
           inputProps={{ 'aria-label': 'controlled' }}
         />
       ),
-    },
+    },{accessorKey:'typeId',header:'typeId',filterVariant:'multi-select',  filterSelectOptions: [1,2,3,4,],columnFilterModeOptions:multiSelectModes, size: 30,}
+    ,{
+      accessorKey: 'released',
+      columnFilterModeOptions:numberDateTimeModes,
+      header: 'Released', size: 30,filterVariant:"date",Cell: ({ row }) => new Date( row.original.released ).toLocaleDateString()},
     {
       id: 'actions', header: 'Actions', size: 50, enableColumnFilter:false,
       Cell: ({ row }) => (
@@ -190,8 +173,7 @@ const Example = ({
       ),
     },
   ], [handleDelete, handleUpdate, updateStatusHandler]);
-
-
+   console.log(globalFilter)
   const table = useMaterialReactTable({
     columns,
     data,
@@ -238,8 +220,6 @@ const Example = ({
 
 const queryClient = new QueryClient();
 
-
-
 const ExampleWithReactQueryProvider = ({
   openModal,
   setId,
@@ -251,10 +231,13 @@ const ExampleWithReactQueryProvider = ({
   setType,
   setVideoUrl,
   setChannel,
+  setReleased,
 }) => (
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
   <QueryClientProvider client={queryClient}>
-    <Example openModal={openModal} setId={setId} setDeleteId={setDeleteId} setTitle={setTitle} setDuration={setDuration} setDescription={setDescription} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setChannel={setChannel} />
+    <Example openModal={openModal} setId={setId} setReleased={setReleased} setDeleteId={setDeleteId} setTitle={setTitle} setDuration={setDuration} setDescription={setDescription} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setChannel={setChannel} />
   </QueryClientProvider>
+  </LocalizationProvider>
 );
 
 export default ExampleWithReactQueryProvider;

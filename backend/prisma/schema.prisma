@@ -35,6 +35,7 @@ model Movie {
   categoryId  Int
   category    Category @relation(fields: [categoryId], references: [id])
   videoUrl    String
+  released    DateTime
 }
 
 model Channel {

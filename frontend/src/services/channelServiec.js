@@ -24,6 +24,7 @@ export const useCRUD = (baseUrl) => {
   const createData = async (newData, event) => {
     setLoading(true)
     setError(null)
+    console.log(newData)
     try {
       const response = await axios.post(baseUrl, newData)
       socket.emit(`${event}`, response.data)

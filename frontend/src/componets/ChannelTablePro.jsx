@@ -19,12 +19,10 @@ import { toast } from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Switch from '@mui/material/Switch';
+import { mergeFilterDatatype, mergeFilterfn } from '../utils/utils';
+import {checkboxModes,ranges } from '../utils/utils';
 
-const clomunVariants={
-  id:'number',
-  name:'text',
-  status:'checkbox'
-}
+
 const Example = ({
     openModal,
     setName,
@@ -35,14 +33,23 @@ const Example = ({
   const [columnFilters, setColumnFilters] = useState([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
-  const [columnFilterFns,setColumnFilterFns]=useState({id:'equals'
-    ,name:'fuzzy',
+  const [columnFilterFns,setColumnFilterFns]=useState({
+    id:'between',
+    name:'fuzzy',
     status:'equals',
   })
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
   });
+
+  const columnDataTypes = {
+    id: 'number',
+    name: 'string',
+    status: 'boolean',
+  };
+  const customeGlobalFilter=JSON.stringify({columuns:['name'],value:globalFilter})
+
   const {toglerStatus}=useCRUD(`${baseURL}/api/channel`)
   const handleDelete = useCallback(
     (row) => {
@@ -65,7 +72,6 @@ const Example = ({
     async(id, ) => {
     try {
       await toglerStatus(id,'datachange')
-      toast.success("chanel updated succesfully")
      } catch (error) {
        toast.error(error?.data?.message || error.message)
      }
@@ -92,20 +98,12 @@ const Example = ({
         '/api/channel/admin',
            `${baseURL}` //use your own API URL,
       );
-      let mergedArr = columnFilters.map(item => {
-        if (item.id in columnFilterFns) {
-          return { ...item, mode: columnFilterFns[item.id] };
-        }
-        return item;
-      });
-
-      mergedArr = mergedArr.map(item => {
-        if (item.id in clomunVariants) {
-          return { ...item, variant: clomunVariants[item.id] };
-        }
-        return item;
-      }
-      );
+          //merege the merged array with thecolumnFilterFns 
+          let mergedArr = mergeFilterfn(columnFilters,columnFilterFns)
+              //merege the merged array with the columnvariants
+            //  mergedArr = mergeFiterVariant(mergedArr,clomunVariants)
+             //merege the merged array with the columnDatatype
+             mergedArr = mergeFilterDatatype (mergedArr,columnDataTypes)
 
       fetchURL.searchParams.set(
         'start',
@@ -113,7 +111,7 @@ const Example = ({
       );
       fetchURL.searchParams.set('size', `${pagination.pageSize}`);
       fetchURL.searchParams.set('filters', JSON.stringify(mergedArr ?? []));
-      fetchURL.searchParams.set('globalFilter', globalFilter ?? '');
+      fetchURL.searchParams.set('globalFilter', customeGlobalFilter ?? '');
       fetchURL.searchParams.set('sorting', JSON.stringify(sorting ?? []));
 
       //use whatever fetch library you want, fetch, axios, etc
@@ -126,10 +124,20 @@ const Example = ({
 
 const columns = useMemo(
     () => [
-        { accessorKey: 'id', header: '#id',filterVariant:'number' ,filterFn:'equal',size: 15,columnFilterModeOptions: ['between', 'lessThan', 'greaterThan','equals',"lessThanOrEqualTo","greaterThanOrEqualTo"],  },
-        { accessorKey: 'name', header: 'Name', size: 30 ,columnFilterModeOptions: ['fuzzy', 'contains', 'startsWith', 'endsWith','equals'] },
         {
-                  accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions: ['equals'] ,
+          accessorKey: 'id', header: 'id' ,size: 15, filterVariant: 'range-slider', columnFilterModeOptions:ranges
+          ,muiFilterSliderProps: {
+            marks: true,
+            max: 7, //custom max (as opposed to faceted max)
+            min: 1, //custom min (as opposed to faceted min)
+            step: 1,
+            valueLabelFormat: (value) =>
+              value.toLocaleString(),
+          }
+        },
+        { accessorKey: 'name', header: 'Name', size: 30 ,filterVariant:'autocomplete'},
+        {
+                accessorKey: 'status', header: 'Status', size: 30, columnFilterModeOptions:checkboxModes ,
                   accessorFn: (originalRow) => (originalRow.isActive ? 'true' : 'false'),
                   filterVariant: 'checkbox',
                   Cell: ({ row }) => (
@@ -173,7 +181,8 @@ const columns = useMemo(
     manualFiltering: true, //turn off built-in client-side filtering
     manualPagination: true, //turn off built-in client-side pagination
     manualSorting: true, //turn off built-in client-side sorting
-     enableColumnFilterModes: true,
+    enableColumnFilterModes: true,
+    enableFacetedValues: true,
     muiToolbarAlertBannerProps: isError
       ? {
           color: 'error',
@@ -210,8 +219,6 @@ const columns = useMemo(
 };
 
 const queryClient = new QueryClient();
-
-
 
 const ChannelProTable = ({
   openModal,

@@ -1,108 +1,202 @@
-const numberAndDateOperators = [
-  "equals",
-  "lessThan",
-  "greaterThan",
-  "lessThanOrEqualTo",
-  "greaterThanOrEqualTo",
-  "between",
-  "notEquals",
-  "betweenInclusive",
-]
-const textOperators = [
-  "equals",
-  "startsWith",
-  "endsWith",
-  "contains",
-  "notEquals",
-  "fuzzy",
-]
-
-export const handleBooleanFilter = (column, value) => {
-  let parsedValue
-  if (value === "true") {
-    parsedValue = true
-  } else if (value === "false") {
-    parsedValue = false
-  }
-  return { [column]: { equals: parsedValue } }
+export const startsWith = (column, val) => {
+  return { [column]: { startsWith: val, mode: "insensitive" } }
 }
 
-export const handleNumberFilter = (column, value, op) => {
-  if (numberAndDateOperators.includes(op)) {
-    const numericValue = Array.isArray(value)
-      ? value.map(Number)
-      : Number(value)
-    switch (op) {
-      case "equals":
-        return { [column]: { equals: numericValue } }
-      case "notEquals":
-        return { [column]: { not: numericValue } }
-      case "lessThan":
-        return { [column]: { lt: numericValue } }
-      case "greaterThan":
-        return { [column]: { gt: numericValue } }
-      case "lessThanOrEqualTo":
-        return { [column]: { lte: numericValue } }
-      case "greaterThanOrEqualTo":
-        return { [column]: { gte: numericValue } }
-      case "between":
-        const [startValue, endValue] = numericValue
-        return { [column]: { gt: startValue || 0, lt: endValue || 999999 } }
-      case "betweenInclusive":
-        const [startValueInc, endValueInc] = numericValue
-        return {
-          [column]: { gte: startValueInc || 0, lte: endValueInc || 999999 },
-        }
-      default:
-        throw new Error(`Unsupported number filter operator: ${op}`)
-    }
-  }
-  throw new Error(`Unsupported number filter operator: ${op}`)
+export const endsWith = (column, val) => {
+  return { [column]: { endsWith: val, mode: "insensitive" } }
+}
+export const contains = (column, val) => {
+  return { [column]: { contains: val, mode: "insensitive" } }
+}
+export const fuzzy = (column, val) => {
+  return { [column]: { contains: val, mode: "insensitive" } }
 }
 
-export const handleDateFilter = (column, value, op) => {
-  if (numberAndDateOperators.includes(op)) {
-    const dateValue = Array.isArray(value)
-      ? value.map((date) => new Date(date))
-      : new Date(value)
-    switch (op) {
-      case "equals":
-        return { [column]: { equals: dateValue } }
-      case "notEquals":
-        return { [column]: { not: dateValue } }
-      case "lessThan":
-        return { [column]: { lt: dateValue } }
-      case "greaterThan":
-        return { [column]: { gt: dateValue } }
-      case "lessThanOrEqualTo":
-        return { [column]: { lte: dateValue } }
-      case "greaterThanOrEqualTo":
-        return { [column]: { gte: dateValue } }
-      case "between":
-        const [startValue, endValue] = dateValue
-        return { [column]: { gt: startValue, lt: endValue } }
-      case "betweenInclusive":
-        const [startValueInc, endValueInc] = dateValue
-        return { [column]: { gte: startValueInc, lte: endValueInc } }
-      default:
-        throw new Error(`Unsupported date filter operator: ${op}`)
+export const equals = (column, val, type) => {
+  let value
+  if (type === "number") {
+    value = Number(val)
+    return { [column]: value }
+  } else if (type === "date") {
+    value = new Date(val)
+    return { [column]: value }
+  } else if (type === "boolean") {
+    value = val === "true"
+    return { [column]: value }
+  } else if (type === "array") {
+    value = val
+    if (value.length >= 1) {
+      return { [column]: { in: value } }
     }
+    return {}
+  } else {
+    value = val
+    return { [column]: { equals: value, mode: "insensitive" } }
   }
-  throw new Error(`Unsupported date filter operator: ${op}`)
 }
 
-export const handleTextFilter = (column, value, op) => {
-  if (textOperators.includes(op)) {
-    if (op === "equals") {
-      return { [column]: value }
-    } else if (op === "startsWith" || op === "endsWith" || op === "contains") {
-      return { [column]: { [op]: value, mode: "insensitive" } }
-    } else if (op === "notEquals") {
-      return { [column]: { not: value } }
-    } else if (op === "fuzzy") {
-      return { [column]: {} }
+export const notEquals = (column, val, type) => {
+  let value
+  if (type === "number") {
+    value = Number(val)
+    return { [column]: { not: value } }
+  } else if (type === "date") {
+    value = new Date(val)
+    return { [column]: { not: value } }
+  } else if (type === "boolean") {
+    value = val === "true"
+    return { [column]: { not: value } }
+  } else if (type === "array") {
+    value = val
+    if (value.length >= 1) {
+      return { [column]: { notIn: value } }
     }
+    return {}
+  } else {
+    value = val
+    return { [column]: { not: value, mode: "insensitive" } }
   }
+}
 
-  throw new Error(`Unsupported text filter operator: ${op}`)
+export const between = (column, val, type) => {
+  let value = val
+
+  if (value[0] && value[1]) {
+    if (type === "number") {
+      value = val.map(Number)
+      return { [column]: { gt: value[0], lt: value[1] } }
+    } else if (type === "date") {
+      value = val.map((date) => new Date(date))
+      return { [column]: { gt: value[0], lt: value[1] } }
+    } else {
+      value = val
+      return { [column]: { gt: value[0], lt: value[1], mode: "insensitive" } }
+    }
+  } else if (value[0]) {
+    return greaterThan(column, value[0], type)
+  } else if (value[1]) {
+    return lessThan(column, value[0], type)
+  } else {
+    return { [column]: {} }
+  }
+}
+
+export const betweenInclusive = (column, val, type) => {
+  let value = val
+  if (value[0] && value[1]) {
+    if (type === "number") {
+      value = val.map(Number)
+      return { [column]: { gte: value[0], lte: value[1] } }
+    } else if (type === "date") {
+      value = val.map((date) => new Date(date))
+      return { [column]: { gte: value[0], lte: value[1] } }
+    } else {
+      value = val
+      return { [column]: { gte: value[0], lte: value[1], mode: "insensitive" } }
+    }
+  } else if (value[0]) {
+    return greaterThanOrEqualTo(column, value[0], type)
+  } else if (value[1]) {
+    return lessThanOrEqualTo(column, value[0], type)
+  } else {
+    return { [column]: {} }
+  }
+}
+export const lessThan = (column, val, type) => {
+  let value
+  if (type === "number") {
+    value = Number(val)
+    return { [column]: { lt: value } }
+  } else if (type === "date") {
+    value = new Date(val)
+    return { [column]: { lt: value } }
+  } else {
+    value = val
+    return { [column]: { lt: value, mode: "insensitive" } }
+  }
+}
+
+export const greaterThan = (column, val, type) => {
+  let value
+  if (type === "number") {
+    value = Number(val)
+    return { [column]: { gt: value } }
+  } else if (type === "date") {
+    value = new Date(val)
+    return { [column]: { gt: value } }
+  } else {
+    value = val
+    return { [column]: { gt: value, mode: "insensitive" } }
+  }
+}
+
+export const lessThanOrEqualTo = (column, val, type) => {
+  let value
+  if (type === "number") {
+    value = Number(val)
+    return { [column]: { lte: value } }
+  } else if (type === "date") {
+    value = new Date(val)
+    return { [column]: { lte: value } }
+  } else {
+    value = val
+    return { [column]: { lte: value, mode: "insensitive" } }
+  }
+}
+
+export const greaterThanOrEqualTo = (column, val, type) => {
+  let value
+  if (type === "number") {
+    value = Number(val)
+    return { [column]: { gte: value } }
+  } else if (type === "date") {
+    value = new Date(val)
+    return { [column]: { gte: value } }
+  } else {
+    value = val
+    return { [column]: { gte: value, mode: "insensitive" } }
+  }
+}
+
+export const empty = (column) => {
+  return { [column]: { equals: null } }
+}
+export const notEmpty = (column) => {
+  return { [column]: { not: null } }
+}
+
+export const createFilterCondition = (column, value, mode, type) => {
+  switch (mode) {
+    case "startsWith":
+      return startsWith(column, value, type)
+    case "contains":
+      return contains(column, value, type)
+    case "endsWith":
+      return endsWith(column, value, type)
+    case "fuzzy":
+      return fuzzy(column, value)
+    case "equals":
+      return equals(column, value, type)
+    case "notEquals":
+      return notEquals(column, value, type)
+    case "lessThan":
+      return lessThan(column, value, type)
+    case "greaterThan":
+      return greaterThan(column, value, type)
+    case "lessThanOrEqualTo":
+      return lessThanOrEqualTo(column, value, type)
+    case "greaterThanOrEqualTo":
+      return greaterThanOrEqualTo(column, value, type)
+    case "between":
+      return between(column, value, type)
+    case "betweenInclusive":
+      return betweenInclusive(column, value, type)
+    case "empty":
+      return empty(column)
+    case "notEmpty":
+      return notEmpty(column)
+    default:
+      console.warn(`Unsupported filter mode: ${mode}`)
+      return {}
+  }
 }

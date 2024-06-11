@@ -15,27 +15,6 @@ export const getMovies = async (req, res) => {
         mode: "insensitive",
       }
     }
-    if (req.query.channel) {
-      queryObj.channel = {
-        id: Number(req.query.channel),
-      }
-    }
-
-    if (req.query.type) {
-      queryObj.type = {
-        id: Number(req.query.type),
-      }
-    }
-
-    if (req.query.category) {
-      queryObj.category = {
-        id: Number(req.query.category),
-      }
-    }
-
-    if (req.query.status) {
-      queryObj.status = req.query.status
-    }
 
     const count = await prisma.movie.count({
       where: queryObj,
@@ -97,6 +76,7 @@ export const createMovie = async (req, res) => {
       typeId,
       categoryId,
       videoUrl,
+      released,
     } = req.body
     const movie = await prisma.movie.create({
       data: {
@@ -107,6 +87,7 @@ export const createMovie = async (req, res) => {
         typeId,
         categoryId,
         videoUrl,
+        released,
       },
     })
     io.emit("onDataChange")
@@ -145,6 +126,7 @@ export const updateMovie = async (req, res) => {
       typeId,
       categoryId,
       videoUrl,
+      released,
     } = req.body
     const movie = await prisma.movie.update({
       where: {
@@ -158,6 +140,7 @@ export const updateMovie = async (req, res) => {
         typeId,
         categoryId,
         videoUrl,
+        released,
       },
     })
     res.json(movie)
@@ -180,7 +163,6 @@ export const getMovieById = async (req, res) => {
   }
 }
 
-// now i want movie  that grouped by category and cout  each movie in catagory
 export const getCategoryMovieCounts = async (req, res) => {
   try {
     const categoryCounts = await prisma.movie.groupBy({
@@ -212,7 +194,9 @@ export const getTypeMovieCounts = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" })
   }
 }
+
 export const getAdminMovies = getAdminData(prisma.movie)
+
 // export const getAdminMovies = async (req, res) => {
 //   try {
 //     let { start, size, filters, globalFilter, sorting } = req.query

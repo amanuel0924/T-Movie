@@ -1,79 +1,30 @@
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
-import {
-  handleBooleanFilter,
-  handleNumberFilter,
-  handleTextFilter,
-} from "../utils/queryGenerators.js"
+import { createFilterCondition } from "./../utils/queryGenerators.js"
+const createWhereClause = (filters, globalFilter) => {
+  let where = {}
+  if (globalFilter.value) {
+    let global = globalFilter?.columuns?.map((column) => {
+      return { [column]: { contains: globalFilter.value, mode: "insensitive" } }
+    })
+    where.OR = global
+  }
+  filters.forEach(({ id: column, value, mode, type }) => {
+    where = { ...where, ...createFilterCondition(column, value, mode, type) }
+  })
+  return where
+}
 
 export const getAdminData = (table) => async (req, res) => {
   try {
     let { start, size, filters, globalFilter, sorting } = req.query
-
     start = parseInt(start, 10) || 0
     size = parseInt(size, 10) || 10
     filters = JSON.parse(filters || "[]")
-    globalFilter = globalFilter || ""
+    globalFilter = JSON.parse(globalFilter || "")
     sorting = JSON.parse(sorting || "[]")
-    console.log("start", filters)
-    let where = {}
+    console.log("query", req.query)
+    console.log(globalFilter)
+    const where = createWhereClause(filters, globalFilter)
 
-    if (globalFilter) {
-      where.OR = [
-        { title: { contains: globalFilter, mode: "insensitive" } },
-        { description: { contains: globalFilter, mode: "insensitive" } },
-      ]
-    }
-
-    const variants = [
-      "number",
-      "text",
-      "date",
-      "datetime",
-      "time",
-      "dateRange",
-      "timeRange",
-      "dateTimeRange",
-      "select",
-      "multiSelect",
-      "checkbox",
-    ]
-
-    filters.forEach((filter) => {
-      const { id: column, value, mode: op, variant } = filter
-
-      switch (variant) {
-        case "text":
-          where = { ...where, ...handleTextFilter(column, value, op) }
-          break
-        case "number":
-          where = { ...where, ...handleNumberFilter(column, value, op) }
-          break
-        case "checkbox":
-          where = { ...where, ...handleBooleanFilter(column, value) }
-          break
-        case "select":
-          where[column] = { equals: value }
-          break
-        case "multiSelect":
-          where[column] = { in: value }
-          break
-        case "date":
-        case "datetime":
-        case "time":
-          where[column] = { [op]: new Date(value) }
-          break
-        case "dateRange":
-        case "timeRange":
-        case "dateTimeRange":
-          const [startValue, endValue] = value
-          where[column] = { gte: new Date(startValue), lte: new Date(endValue) }
-          break
-        default:
-          console.warn(`Unsupported filter operator: ${op}`)
-      }
-    })
     const orderBy = sorting.map((sort) => ({
       [sort.id]: sort.desc ? "desc" : "asc",
     }))
@@ -99,3 +50,162 @@ export const getAdminData = (table) => async (req, res) => {
     res.status(500).json({ error: "Something went wrong" })
   }
 }
+
+// export const getAdminDataByFilter = (table) => async (req, res) => {
+//   try {
+//     // Parse query parameters with proper error handling
+//     let { start, size, filters, globalFilter, sorting } = req.query
+//     start = parseInt(start, 10) || 0
+//     size = parseInt(size, 10) || 10
+//     if (isNaN(start) || isNaN(size)) {
+//       return res
+//         .status(400)
+//         .json({ message: "Invalid start or size parameters" })
+//     }
+//     filters = JSON.parse(filters || "[]")
+//     globalFilter = globalFilter || ""
+//     sorting = JSON.parse(sorting || "[]")
+
+//     // Validate sorting criteria (optional)
+//     if (
+//       !Array.isArray(sorting) ||
+//       sorting.some((sort) => !sort.id || typeof sort.desc !== "boolean")
+//     ) {
+//       return res.status(400).json({ message: "Invalid sorting criteria" })
+//     }
+
+//     // Apply in-memory filtering (optional)
+//     let filteredData = await table.findMany() // Fetch all data initially
+//     console.log("filteredData", filters)
+//     if (filters.length > 0) {
+//       filteredData = filteredData.filter((row) => {
+//         for (const filter of filters) {
+//           const { id, value, mode, variant, type } = filter
+//           let match = false
+
+//           switch (variant) {
+//             case "text":
+//               if (mode === "startsWith") {
+//                 match = startsWith(row, id, value)
+//               } else if (mode === "contains") {
+//                 match = contains(row, id, value)
+//               } else if (mode === "endsWith") {
+//                 match = endsWith(row, id, value)
+//               } else if (mode === "fuzzy") {
+//                 match = fuzzy()
+//               } else if (mode === "equals") {
+//                 match = equals(row, id, value, type)
+//               } else if (mode === "notEquals") {
+//                 match = notEquals(row, id, value, type)
+//               } else if (mode === "lessThan") {
+//                 match = lessThan(row, id, value, type)
+//               } else if (mode === "greaterThan") {
+//                 match = greaterThan(row, id, value, type)
+//               } else if (mode === "lessThanOrEqualTo") {
+//                 match = lessThanOrEqualTo(row, id, value, type)
+//               } else if (mode === "greaterThanOrEqualTo") {
+//                 match = greaterThanOrEqualTo(row, id, value, type)
+//               } else if (mode === "between") {
+//                 match = between(row, id, value, type)
+//               } else if (mode === "betweenInclusive") {
+//                 match = betweenInclusive(row, id, value, type)
+//               } else if (mode === "empty") {
+//                 match = row[id] === null || row[id] === ""
+//               } else if (mode === "notEmpty") {
+//                 match = row[id] !== null && row[id] !== ""
+//               } else {
+//                 console.warn(`Unsupported text filter mode: ${mode}`)
+//               }
+//               break
+//             case "date":
+//             case "datetime":
+//             case "time":
+//               if (mode === "equals") {
+//                 match = equals(row, id, value, type)
+//               } else if (mode === "notEquals") {
+//                 match = notEquals(row, id, value, type)
+//               } else if (mode === "lessThan") {
+//                 match = lessThan(row, id, value, type)
+//               } else if (mode === "greaterThan") {
+//                 match = greaterThan(row, id, value, type)
+//               } else if (mode === "lessThanOrEqualTo") {
+//                 match = lessThanOrEqualTo(row, id, value, type)
+//               } else if (mode === "greaterThanOrEqualTo") {
+//                 match = greaterThanOrEqualTo(row, id, value, type)
+//               } else if (mode === "between") {
+//                 match = between(row, id, value, type)
+//               } else if (mode === "betweenInclusive") {
+//                 match = betweenInclusive(row, id, value, type)
+//               } else if (mode === "empty") {
+//                 match = row[id] === null || row[id] === ""
+//               } else if (mode === "notEmpty") {
+//                 match = row[id] !== null && row[id] !== ""
+//               } else {
+//                 console.warn(`Unsupported text filter mode: ${mode}`)
+//               }
+//             case "select":
+//               if (mode === "equals") {
+//                 match = equals(row, id, value, type)
+//               } else if (mode === "notEquals") {
+//                 match = notEquals(row, id, value, type)
+//               } else if (mode === "lessThan") {
+//                 match = lessThan(row, id, value, type)
+//               } else if (mode === "greaterThan") {
+//                 match = greaterThan(row, id, value, type)
+//               } else if (mode === "lessThanOrEqualTo") {
+//                 match = lessThanOrEqualTo(row, id, value, type)
+//               } else if (mode === "greaterThanOrEqualTo") {
+//                 match = greaterThanOrEqualTo(row, id, value, type)
+//               }
+//               break
+//             case "multiSelect":
+//               match = value.includes(row[id])
+//               break
+//             case "range":
+//             case "range-slider":
+//             case "time-range":
+//             case "date-range":
+//             case "dateTime-range":
+//               if (mode === "between") {
+//                 match = between(row, id, value, type)
+//               } else if (mode === "betweenInclusive") {
+//                 match = betweenInclusive(row, id, value, type)
+//               }
+//               break
+//             case "checkbox":
+//               match = equals(row, id, value, type)
+//             default:
+//               console.warn(`Unsupported filter variant: ${variant}`)
+//           }
+
+//           if (!match) return false // Early termination if filter doesn't match
+//         }
+//         return true
+//       })
+//     }
+
+//     // Apply in-memory sorting
+//     filteredData.sort((a, b) => {
+//       for (const sort of sorting) {
+//         const { id, desc } = sort
+//         const compareValue = a[id] - b[id]
+//         const sortOrder = desc ? -1 : 1
+//         if (compareValue !== 0) return compareValue * sortOrder
+//       }
+//       return 0 // No sorting difference found based on provided criteria
+//     })
+
+//     // Apply pagination (slice the filtered data)
+//     const paginatedData = filteredData.slice(start, start + size)
+
+//     res.json({
+//       data: paginatedData,
+//       meta: {
+//         totalRowCount: filteredData.length,
+//       },
+//     }) // Include total count
+//   } catch (error) {
+//     console.error(error)
+//     res.status(500).json({ message: "Internal server error" })
+//   }
+// }

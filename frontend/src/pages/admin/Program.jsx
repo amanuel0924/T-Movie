@@ -12,6 +12,10 @@ import Loader from '../../componets/Loader';
 import { baseURL } from "../../socket";
 // import ProTable from "../../componets/ProgramTable3";
 import Table from './../../componets/ProTable2'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 const style = {
   position: 'absolute',
@@ -38,6 +42,7 @@ const Program = () => {
   const [videoUrl, setVideoUrl] = useState('');
   const [duration, setDuration] = useState('');
   const [description, setDescription] = useState('');
+  const [released, setReleased] = useState(null);
 
 
   const handleClose = () => {
@@ -51,6 +56,7 @@ const Program = () => {
     setDuration('')
     setDeleteId('')
     setDescription('')
+    setReleased(null)
   };
 
   const handleOpen = () => setOpen(true);
@@ -63,11 +69,11 @@ const Program = () => {
 
 
   const handleCreate = async () => {
-    if (!title || !channel || !type || !category || !videoUrl || !duration||!description) {
+    if (!title || !channel || !type || !category || !videoUrl || !duration||!description||!released) {
       toast.error("please fill all input")
     } else {
       try {
-        await createData({  title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'datachange')
+        await createData({  title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description,released},'datachange')
         handleClose();
       } catch (error) {
         toast.error(error?.data?.message || error.message)
@@ -76,11 +82,11 @@ const Program = () => {
   };
 
   const handleUpdate = async () => {
-    if (!title || !channel || !type || !category || !videoUrl || !duration||!description) {
+    if (!title || !channel || !type || !category || !videoUrl || !duration||!description||!released) {
       toast.error("please fill all input")
     } else {
       try {
-        await updateData(id, { title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description},'datachange')
+        await updateData(id, { title, channelId:+channel, typeId:+type, categoryId:category, videoUrl,duration :Number(duration) ,description,released},'datachange',)
         handleClose();
       } catch (error) {
         toast.error(error?.data?.message || error.message)
@@ -114,7 +120,7 @@ const Program = () => {
     <Paper sx={{padding:2}}  >
     <Box sx={{borderBottom:' solid 1px',}}>
       <PagesHeader openModal={handleOpen} />
-      <Table   openModal={handleOpen} setId={setId}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
+      <Table   openModal={handleOpen} setId={setId} setReleased={setReleased}  setTitle={setTitle} setChannel={setChannel} setCategory={setCategory} setType={setType} setVideoUrl={setVideoUrl} setDuration={setDuration} setDeleteId={setDeleteId} setDescription={setDescription} />
     </Box>
     <Modal
         open={open}
@@ -194,6 +200,11 @@ const Program = () => {
         
       </Select>
     </FormControl>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['DatePicker']}>
+        <DatePicker value={released} onChange={(newValue) => setReleased(newValue)} />
+      </DemoContainer>
+    </LocalizationProvider>
        </Stack>
         </Box>}
         <Box sx={{display:'flex' ,justifyContent:'center',gap:'20px',padding:'20px'}}>
@@ -205,9 +216,6 @@ const Program = () => {
         </Box>
         </Box>
       </Modal>
-
-     
-
    </Paper>
   )
 }

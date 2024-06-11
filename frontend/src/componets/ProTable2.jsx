@@ -158,7 +158,12 @@ const Example = ({
       { label: 'Live TV', value: 1},
       { label: 'Movies', value: 2},
       { label: 'TV Shows', value: 3 },
-      { label: 'Sports', value: 2},],columnFilterModeOptions:multiSelectModes, size: 30,}
+      { label: 'Sports', value: 2},],columnFilterModeOptions:multiSelectModes, size: 30,
+      Cell: ({ row }) => {
+        return row.original.typeId === 1 ? 'Live TV' : row.original.typeId === 2 ? 'Movies' : row.original.typeId === 3 ? 'TV Shows' : row.original.typeId === 4 ? 'Sports' : 'Unknown'
+      }
+    }
+      
     ,{
       accessorKey: 'released',
       columnFilterModeOptions:numberDateTimeModes,

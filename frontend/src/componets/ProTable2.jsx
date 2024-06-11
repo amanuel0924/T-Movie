@@ -131,7 +131,6 @@ const Example = ({
     },
     placeholderData: keepPreviousData, //don't go to 0 rows when refetching or paginating to next page
   });
-
   const columns = useMemo(() => [
     { accessorKey: 'id', header: 'id' ,size: 15, columnFilterModeOptions:numberDateTimeModes,   },
     { accessorKey: 'title', header: 'Title', size: 30  },
@@ -163,7 +162,6 @@ const Example = ({
         return row.original.typeId === 1 ? 'Live TV' : row.original.typeId === 2 ? 'Movies' : row.original.typeId === 3 ? 'TV Shows' : row.original.typeId === 4 ? 'Sports' : 'Unknown'
       }
     }
-      
     ,{
       accessorKey: 'released',
       columnFilterModeOptions:numberDateTimeModes,
@@ -182,7 +180,6 @@ const Example = ({
       ),
     },
   ], [handleDelete, handleUpdate, updateStatusHandler]);
-   console.log(globalFilter)
   const table = useMaterialReactTable({
     columns,
     data,

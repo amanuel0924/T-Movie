@@ -34,7 +34,7 @@ const Example = ({
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
   const [columnFilterFns,setColumnFilterFns]=useState({
-    id:'between',
+    id:'betweenInclusive',
     name:'fuzzy',
     status:'equals',
   })
@@ -43,10 +43,10 @@ const Example = ({
     pageSize: 10,
   });
 
-  const columnDataTypes = {
+  const customVariantsTypes = {
     id: 'number',
-    name: 'string',
-    status: 'boolean',
+    name: 'text',
+    status: 'checkbox',
   };
   const customeGlobalFilter=JSON.stringify({columuns:['name'],value:globalFilter})
 
@@ -100,10 +100,7 @@ const Example = ({
       );
           //merege the merged array with thecolumnFilterFns 
           let mergedArr = mergeFilterfn(columnFilters,columnFilterFns)
-              //merege the merged array with the columnvariants
-            //  mergedArr = mergeFiterVariant(mergedArr,clomunVariants)
-             //merege the merged array with the columnDatatype
-             mergedArr = mergeFilterDatatype (mergedArr,columnDataTypes)
+             mergedArr = mergeFilterDatatype (mergedArr,customVariantsTypes)
 
       fetchURL.searchParams.set(
         'start',

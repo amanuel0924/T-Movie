@@ -1,14 +1,8 @@
+// import Fuse from "fuse.js"
 // function convertDateToLocal(dateWithTimezone) {
-//   // Create a new Date object from the date with timezone
 //   const dateObj = new Date(dateWithTimezone)
-
-//   // Get the timezone offset in milliseconds
 //   const timezoneOffset = dateObj.getTimezoneOffset() * 60000
-
-//   // Create a new date object without the timezone offset
 //   const dateWithoutTimezone = new Date(dateObj.valueOf() - timezoneOffset)
-
-//   // Format the date as YYYY-MM-DD string without timezone information
 //   return dateWithoutTimezone
 // }
 
@@ -31,6 +25,9 @@
 // }
 
 // export const fuzzy = () => {
+//   // const fruits = ['apple', 'orange', 'banana', 'pear']
+//   // const fuse = new Fuse(fruits)
+//   // console.log(fuse.getIndex().size())
 //   return true
 // }
 
@@ -44,6 +41,12 @@
 //       new Date(convertDateToLocal(value)).getTime()
 //   } else if (type === "boolean") {
 //     match = row[id] === (value === "true")
+//   } else if (type === "array") {
+//     if (value.length >= 1) {
+//       match = value.includes(row[id])
+//     } else {
+//       match = true
+//     }
 //   } else {
 //     match = row[id] === value
 //   }
@@ -58,6 +61,15 @@
 //     match =
 //       new Date(row[id]).getTime() !==
 //       new Date(convertDateToLocal(value)).getTime()
+//   } else if (type === "boolean") {
+//     match = row[id] !== (value === "true")
+//   } else if (type === "array") {
+//     value = val
+//     if (value.length >= 1) {
+//       match = !value.includes(row[id])
+//     } else {
+//       match = true
+//     }
 //   } else {
 //     match = row[id] !== value
 //   }
@@ -123,19 +135,27 @@
 // export const between = (row, id, value, type) => {
 //   let match = false
 //   const [startValue, endValue] = value
-//   if (type === "number") {
-//     match =
-//       row[id] > parseInt(startValue, 10) && row[id] < parseInt(endValue, 10)
-//   } else if (type === "date") {
-//     match =
-//       new Date(row[id]).getTime() >
-//         new Date(convertDateToLocal(startValue)).getTime() &&
-//       new Date(row[id]).getTime() <
-//         new Date(convertDateToLocal(endValue)).getTime()
+//   if (startValue && endValue) {
+//     if (type === "number") {
+//       match =
+//         row[id] > parseInt(startValue, 10) && row[id] < parseInt(endValue, 10)
+//     } else if (type === "date") {
+//       match =
+//         new Date(row[id]).getTime() >
+//           new Date(convertDateToLocal(startValue)).getTime() &&
+//         new Date(row[id]).getTime() <
+//           new Date(convertDateToLocal(endValue)).getTime()
+//     } else {
+//       match =
+//         row[id].toLowerCase() > startValue.toLowerCase() &&
+//         row[id].toLowerCase() < endValue.toLowerCase()
+//     }
+//   } else if (startValue) {
+//     return greaterThan(row, id, startValue, type)
+//   } else if (endValue) {
+//     return lessThan(row, id, endValue, type)
 //   } else {
-//     match =
-//       row[id].toLowerCase() > startValue.toLowerCase() &&
-//       row[id].toLowerCase() < endValue.toLowerCase()
+//     match = true
 //   }
 //   return match
 // }
@@ -143,26 +163,75 @@
 // export const betweenInclusive = (row, id, value, type) => {
 //   let match = false
 //   const [startValue, endValue] = value
-//   if (type === "number") {
-//     match =
-//       row[id] >= parseInt(startValue, 10) && row[id] <= parseInt(endValue, 10)
-//   }
-//   if (type === "date") {
-//     match =
-//       new Date(row[id]).getTime() >=
-//         new Date(convertDateToLocal(startValue)).getTime() &&
-//       new Date(row[id]).getTime() <=
-//         new Date(convertDateToLocal(endValue)).getTime()
+//   if (startValue && endValue) {
+//     if (type === "number") {
+//       match =
+//         row[id] >= parseInt(startValue, 10) && row[id] <= parseInt(endValue, 10)
+//     } else if (type === "date") {
+//       match =
+//         new Date(row[id]).getTime() >=
+//           new Date(convertDateToLocal(startValue)).getTime() &&
+//         new Date(row[id]).getTime() <=
+//           new Date(convertDateToLocal(endValue)).getTime()
+//     } else {
+//       match =
+//         row[id].toLowerCase() >= startValue.toLowerCase() &&
+//         row[id].toLowerCase() <= endValue.toLowerCase()
+//     }
+//   } else if (startValue) {
+//     return greaterThanOrEqualTo(row, id, startValue, type)
+//   } else if (endValue) {
+//     return lessThanOrEqualTo(row, id, endValue, type)
 //   } else {
-//     match =
-//       row[id].toLowerCase() >= startValue.toLowerCase() &&
-//       row[id].toLowerCase() <= endValue.toLowerCase()
+//     match = true
 //   }
 //   return match
 // }
 
-// export const multiSelect = (row, id, value) => {
-//   let match = false
-//   match = value.includes(row[id])
-//   return match
+// export const empty = (row, id) => {
+//   return row[id] === "" || row[id] === null
+// }
+
+// export const notEmpty = (row, id) => {
+//   return row[id] !== "" && row[id] !== null
+// }
+
+// export const createFilterConditionFunction = (
+//   row,
+//   column,
+//   value,
+//   mode,
+//   type
+// ) => {
+//   switch (mode) {
+//     case "startsWith":
+//       return startsWith(row, column, value)
+//     case "contains":
+//       return contains(row, column, value)
+//     case "endsWith":
+//       return endsWith(row, column, value)
+//     case "equals":
+//       return equals(row, column, value, type)
+//     case "notEquals":
+//       return notEquals(row, column, value, type)
+//     case "lessThan":
+//       return lessThan(row, column, value, type)
+//     case "greaterThan":
+//       return greaterThan(row, column, value, type)
+//     case "lessThanOrEqualTo":
+//       return lessThanOrEqualTo(row, column, value, type)
+//     case "greaterThanOrEqualTo":
+//       return greaterThanOrEqualTo(row, column, value, type)
+//     case "between":
+//       return between(row, column, value, type)
+//     case "betweenInclusive":
+//       return betweenInclusive(row, column, value, type)
+//     case "empty":
+//       return empty(row, column)
+//     case "notEmpty":
+//       return notEmpty(row, column)
+//     default:
+//       console.warn(`Unsupported filter mode: ${mode}`)
+//       return {}
+//   }
 // }

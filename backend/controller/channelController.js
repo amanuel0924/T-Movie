@@ -9,6 +9,7 @@ import {
   getDatabyId,
 } from "./refactoredController.js"
 const prisma = new PrismaClient()
+export const getAdminChannel = getAdminData(prisma.channel)
 
 export const getChannels = getUserData(prisma.channel)
 
@@ -21,5 +22,3 @@ export const updateChannel = updateData(prisma.channel)
 export const getChannelById = getDatabyId(prisma.channel)
 
 export const statusTogler = togler(prisma.channel)
-
-export const getAdminChannel = getAdminData(prisma.channel)

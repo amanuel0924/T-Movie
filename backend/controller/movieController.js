@@ -23,6 +23,8 @@ export const updateMovie = updateData(prisma.movie)
 
 export const getMovieById = getDatabyId(prisma.movie)
 
+export const getAdminMovies = getAdminData(prisma.movie)
+
 export const getCategoryMovieCounts = async (req, res) => {
   try {
     const categoryCounts = await prisma.movie.groupBy({
@@ -54,5 +56,3 @@ export const getTypeMovieCounts = async (req, res) => {
     res.status(500).json({ error: "Something went wrong" })
   }
 }
-
-export const getAdminMovies = getAdminData(prisma.movie)

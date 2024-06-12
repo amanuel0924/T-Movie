@@ -49,14 +49,14 @@ const Example = ({
     released:'equals',
     typeId:'equals'
   })
-  const columnDataTypes = {
+  const customVariantsTypes = {
     id: 'number',
-    title: 'string',
-    description: 'string',
+    title: 'text',
+    description: 'text',
     duration: 'number',
-    status: 'boolean',
+    status: 'checkbox',
     released: 'date',
-    typeId:'array'
+    typeId:'multiSelect'
   };
   const customeGlobalFilter=JSON.stringify({columuns:['title','description'],value:globalFilter})
 
@@ -115,8 +115,9 @@ const Example = ({
 
       //merege the merged array with thecolumnFilterFns 
       let mergedArr = mergeFilterfn(columnFilters,columnFilterFns)
-      //merege the merged array with the columnDatatype
-      mergedArr = mergeFilterDatatype (mergedArr,columnDataTypes)
+      //merege the merged array with the customVariantsTypes
+      mergedArr = mergeFilterDatatype (mergedArr,customVariantsTypes)
+
       fetchURL.searchParams.set(
         'start',
         `${pagination.pageIndex * pagination.pageSize}`,
@@ -131,8 +132,9 @@ const Example = ({
     },
     placeholderData: keepPreviousData, //don't go to 0 rows when refetching or paginating to next page
   });
+
   const columns = useMemo(() => [
-    { accessorKey: 'id', header: 'id' ,size: 15, columnFilterModeOptions:numberDateTimeModes,   },
+    { accessorKey: 'id', header: 'id' ,size: 15,    },
     { accessorKey: 'title', header: 'Title', size: 30  },
     { accessorKey: 'duration',size:15,filterSelectOptions: [
       { label: '1h', value: 1 * 60 * 60 * 1000} ,
@@ -157,7 +159,7 @@ const Example = ({
       { label: 'Live TV', value: 1},
       { label: 'Movies', value: 2},
       { label: 'TV Shows', value: 3 },
-      { label: 'Sports', value: 2},],columnFilterModeOptions:multiSelectModes, size: 30,
+      { label: 'Sports', value: 4},],columnFilterModeOptions:multiSelectModes, size: 30,
       Cell: ({ row }) => {
         return row.original.typeId === 1 ? 'Live TV' : row.original.typeId === 2 ? 'Movies' : row.original.typeId === 3 ? 'TV Shows' : row.original.typeId === 4 ? 'Sports' : 'Unknown'
       }
@@ -215,7 +217,6 @@ const Example = ({
   useEffect(() => {
     socket.on('onDataChange', refetch);
     refetch
-    console.log(columnFilterFns,columnFilters)
     return () => {
       socket.off('onDataChange', refetch);
     };

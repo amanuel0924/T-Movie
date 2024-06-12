@@ -1,7 +1,6 @@
 export const startsWith = (column, val) => {
   return { [column]: { startsWith: val, mode: "insensitive" } }
 }
-
 export const endsWith = (column, val) => {
   return { [column]: { endsWith: val, mode: "insensitive" } }
 }
@@ -20,10 +19,10 @@ export const equals = (column, val, type) => {
   } else if (type === "date") {
     value = new Date(val)
     return { [column]: value }
-  } else if (type === "boolean") {
+  } else if (type === "checkbox") {
     value = val === "true"
     return { [column]: value }
-  } else if (type === "array") {
+  } else if (type === "multiSelect") {
     value = val
     if (value.length >= 1) {
       return { [column]: { in: value } }
@@ -43,10 +42,10 @@ export const notEquals = (column, val, type) => {
   } else if (type === "date") {
     value = new Date(val)
     return { [column]: { not: value } }
-  } else if (type === "boolean") {
+  } else if (type === "checkbox") {
     value = val === "true"
     return { [column]: { not: value } }
-  } else if (type === "array") {
+  } else if (type === "multiSelect") {
     value = val
     if (value.length >= 1) {
       return { [column]: { notIn: value } }

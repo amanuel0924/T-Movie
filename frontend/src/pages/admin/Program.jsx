@@ -16,6 +16,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 const style = {
   position: 'absolute',
@@ -27,7 +28,6 @@ const style = {
   borderRadius: '16px',
   boxShadow: 24,
   p: 2,
-
 };
 
 const Program = () => {
@@ -66,7 +66,7 @@ const Program = () => {
   const { data: categorys,fetchData:fechCat} = useCRUD(`${baseURL}/api/typeandcategory/categories`);
   const { data: channels,fetchData:fechChannel} = useCRUD(`${baseURL}/api/channel`);
 
-
+  
 
   const handleCreate = async () => {
     if (!title || !channel || !type || !category || !videoUrl || !duration||!description||!released) {
@@ -150,7 +150,7 @@ const Program = () => {
           <em>None</em>
         </MenuItem>
        {
-          channels?.map((channel) => (
+          channels?.data?.map((channel) => (
             <MenuItem key={channel.id} value={channel.id}>{channel.name}</MenuItem>
           ))
        }
@@ -202,7 +202,7 @@ const Program = () => {
     </FormControl>
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['DatePicker']}>
-        <DatePicker value={released} onChange={(newValue) => setReleased(newValue)} />
+      <DatePicker value={released ? dayjs(released) : null} onChange={(newValue) => setReleased(newValue)} />
       </DemoContainer>
     </LocalizationProvider>
        </Stack>

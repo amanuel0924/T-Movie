@@ -51,6 +51,131 @@ export const getAdminData = (table) => async (req, res) => {
   }
 }
 
+export const createData = (table) => async (req, res) => {
+  const io = req.io
+  try {
+    const data = await table.create({
+      data: {
+        ...req.body,
+      },
+    })
+    io.emit("onDataChange")
+    res.json(data)
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}
+
+export const deleteData = (table) => async (req, res) => {
+  const io = req.io
+  try {
+    const { id } = req.params
+    await table.delete({
+      where: {
+        id: parseInt(id),
+      },
+    })
+    io.emit("onDataChange")
+    res.json({ message: "Data deleted" })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}
+
+export const updateData = (table) => async (req, res) => {
+  try {
+    const { id } = req.params
+    const data = await table.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        ...req.body,
+      },
+    })
+    res.json(data)
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}
+export const getDatabyId = (table) => async (req, res) => {
+  try {
+    const { id } = req.params
+    const data = await table.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    })
+    res.json(data)
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}
+
+export const togler = (table) => async (req, res) => {
+  try {
+    const { id } = req.params
+    const data = await table.findUnique({
+      where: {
+        id: parseInt(id),
+      },
+    })
+    if (!data) {
+      return res.status(404).json({ error: "data not found" })
+    }
+    const updatedData = await table.update({
+      where: {
+        id: parseInt(id),
+      },
+      data: {
+        status: !data.status,
+      },
+    })
+
+    res.json(updatedData)
+  } catch (error) {
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}
+
+export const getUserData = (table) => async (req, res) => {
+  try {
+    const pageSize = 5
+    const page = Number(req.query.pageNumber) || 1
+    const queryObj = {}
+
+    if (req.query.keyword) {
+      queryObj.title = {
+        contains: req.query.keyword,
+        mode: "insensitive",
+      }
+    }
+
+    const count = await table.count({
+      where: queryObj,
+    })
+
+    const data = await table.findMany({
+      where: queryObj,
+      take: pageSize,
+      skip: pageSize * (page - 1),
+    })
+    const tolalData = await table.count()
+
+    res.status(200).json({
+      page,
+      pages: Math.ceil(count / pageSize),
+      data,
+      tolalData,
+    })
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({ error: "Something went wrong" })
+  }
+}
+
 // export const getAdminDataByFilter = (table) => async (req, res) => {
 //   try {
 //     // Parse query parameters with proper error handling
